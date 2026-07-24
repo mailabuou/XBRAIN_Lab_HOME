@@ -237,8 +237,14 @@ section{padding:84px 0}
   font-family:'IBM Plex Mono'; font-size:.8rem; font-weight:500; color:var(--text-2); cursor:pointer; transition:.18s}
 .fchip:hover{border-color:var(--green); color:var(--green)}
 .fchip.on{background:var(--green-ink); color:#fff; border-color:var(--green-ink)}
+.filter-divider{width:1px; height:24px; background:var(--line); margin:0 2px}
 
 .board{margin-top:30px; border-top:2px solid var(--green-ink)}
+.board-section-title{display:flex; align-items:center; gap:12px; padding:22px 8px 5px; font-family:'IBM Plex Mono'; font-size:.76rem; font-weight:600; letter-spacing:.12em; color:var(--green); text-transform:uppercase}
+.board-section-title::after{content:''; height:1px; flex:1; background:var(--line)}
+.pub.featured{background:linear-gradient(90deg,rgba(14,157,87,.09),rgba(249,206,110,.08))}
+.pub.featured:hover{background:linear-gradient(90deg,rgba(14,157,87,.14),rgba(249,206,110,.13))}
+.featured-mark{display:inline-block; margin-left:7px; padding:2px 8px; border-radius:100px; background:var(--yellow-2); color:var(--green-ink); font-family:'IBM Plex Mono'; font-size:.64rem; font-weight:700; vertical-align:middle}
 .pub{display:grid; grid-template-columns:96px 1fr auto; gap:26px; padding:26px 8px; align-items:start;
   border-bottom:1px solid var(--line); transition:.22s; position:relative}
 .pub:hover{background:var(--mint); padding-left:18px; padding-right:18px}
@@ -1100,27 +1106,65 @@ function linkData(link){
   url=externalUrl(url);
   return {label:label||'링크',url};
 }
+function boardKind(key,d){
+  const text=((d.tags||[]).join(' ')+' '+(d.venue||'')).toLowerCase();
+  if(key==='papers'){
+    if(/conference|학회/.test(text))return 'conference';
+    if(/journal|저널|학술지/.test(text))return 'journal';
+    return 'other';
+  }
+  if(/등록|registered|granted/.test(text))return 'registered';
+  if(/출원|pending|application/.test(text))return 'pending';
+  return 'other';
+}
+function boardSearchText(key,d){
+  const kind=boardKind(key,d), aliases={
+    conference:'conference 학회 학술대회',
+    journal:'journal 저널 학술지',
+    registered:'registered granted 등록 등록특허',
+    pending:'pending application 출원 출원특허',
+    other:'기타 other'
+  };
+  return [d.year,d.title,d.authors,d.venue,(d.tags||[]).join(' '),(d.badges||[]).join(' '),aliases[kind],d.featured?'주요성과 주요 성과 탑티어 최고수준 featured top tier':''].join(' ').toLowerCase();
+}
 function makeBoard(key, boardId, filtersId, searchId){
-  let year='all', term='';
+  let year='all', kind='all', term='';
   function render(){
     const years=[...new Set(DB[key].map(d=>d.year))].sort((a,b)=>b-a);
+    const kindOptions=key==='papers'?[['all','전체 유형'],['journal','Journal'],['conference','Conference'],['featured','주요 성과']]:
+      [['all','전체 상태'],['registered','등록'],['pending','출원'],['featured','주요 성과']];
     $('#'+filtersId).innerHTML=[
       `<button class="fchip${year==='all'?' on':''}" data-y="all">전체</button>`,
       ...years.map(y=>`<button class="fchip${String(year)===String(y)?' on':''}" data-y="${y}">${y}</button>`),
+      `<span class="filter-divider" aria-hidden="true"></span>`,
+      ...kindOptions.map(([value,label])=>`<button class="fchip${kind===value?' on':''}" data-kind="${value}">${label}</button>`),
       `<button class="add-btn admin-only" data-add="${key}">+ ${key==='papers'?'논문':'특허'} 추가</button>`].join('');
     const rows=DB[key].map((d,idx)=>({d,idx})).filter(({d})=>{
       const okY=year==='all'||String(d.year)===String(year);
-      const hay=(d.title+' '+d.authors+' '+d.venue+' '+(d.tags||[]).join(' ')).toLowerCase();
-      return okY&&hay.includes(term);
-    }).sort((a,b)=>b.d.year-a.d.year);
-    $('#'+boardId).innerHTML=rows.length?rows.map(({d,idx},i)=>`
-      <article class="pub"><div class="thumb${d.img?' zoomable':''}"${d.img?` data-zoom="${key}:${idx}" role="button" tabindex="0" aria-label="${primaryIsVideo(d)?'동영상 재생':'이미지 확대 보기'}"`:''}>${d.img?`<img src="${esc(d.img)}" alt="" style="width:100%;height:100%;object-fit:cover">${primaryIsVideo(d)?'<span class="media-play">▶</span>':''}`:tileSVG(Object.values(HUES)[i%3], d.year+i)}</div>
-        <div><div class="yr">${esc(d.year)}${(d.badges||[]).map(b=>`<span class="badge-pill${String(b).includes('%')?' pct':''}">${esc(b)}</span>`).join('')}</div><h3>${esc(d.title)}</h3><div class="auth">${bold(d.authors)}</div>
+      const okKind=kind==='all'||(kind==='featured'?!!d.featured:boardKind(key,d)===kind);
+      const words=term.split(/\s+/).filter(Boolean), hay=boardSearchText(key,d);
+      return okY&&okKind&&words.every(word=>hay.includes(word));
+    });
+    const featured=rows.filter(({d})=>d.featured).sort((a,b)=>(Number(a.d.featuredOrder)||9999)-(Number(b.d.featuredOrder)||9999)||Number(b.d.year)-Number(a.d.year)||a.idx-b.idx);
+    const regular=rows.filter(({d})=>!d.featured).sort((a,b)=>Number(b.d.year)-Number(a.d.year)||a.idx-b.idx);
+    const rowHtml=({d,idx},i)=>`
+      <article class="pub${d.featured?' featured':''}"><div class="thumb${d.img?' zoomable':''}"${d.img?` data-zoom="${key}:${idx}" role="button" tabindex="0" aria-label="${primaryIsVideo(d)?'동영상 재생':'이미지 확대 보기'}"`:''}>${d.img?`<img src="${esc(d.img)}" alt="" style="width:100%;height:100%;object-fit:cover">${primaryIsVideo(d)?'<span class="media-play">▶</span>':''}`:tileSVG(Object.values(HUES)[i%3], d.year+i)}</div>
+        <div><div class="yr">${esc(d.year)}${d.featured?'<span class="featured-mark">주요 성과</span>':''}${(d.badges||[]).map(b=>`<span class="badge-pill${String(b).includes('%')?' pct':''}">${esc(b)}</span>`).join('')}</div><h3>${esc(d.title)}</h3><div class="auth">${bold(d.authors)}</div>
           <div class="venue">${esc(d.venue)}</div><div class="ptags">${(d.tags||[]).map(t=>`<span class="pt">${esc(t)}</span>`).join('')}</div></div>
         <div class="links">${(d.links||[]).map(linkData).map(l=>`<a class="plink" href="${esc(l.url)}" target="_blank" rel="noopener">${linkIcon}${esc(l.label)}</a>`).join('')}${actionBtns(key,idx)}</div>
-      </article>`).join('') : `<div class="empty">// 항목이 없습니다</div>`;
+      </article>`;
+    if(!rows.length){$('#'+boardId).innerHTML=`<div class="empty">// 검색 조건에 맞는 항목이 없습니다</div>`;return;}
+    $('#'+boardId).innerHTML=[
+      featured.length?`<div class="board-section-title">주요 성과</div>${featured.map(rowHtml).join('')}`:'',
+      regular.length?`${featured.length?'<div class="board-section-title">일반 성과</div>':''}${regular.map(rowHtml).join('')}`:''
+    ].join('');
   }
-  $('#'+filtersId).addEventListener('click',e=>{const b=e.target.closest('.fchip'); if(!b)return; year=b.dataset.y; render();});
+  $('#'+filtersId).addEventListener('click',e=>{
+    const b=e.target.closest('.fchip'); if(!b)return;
+    if(b.dataset.y!==undefined)year=b.dataset.y;
+    if(b.dataset.kind!==undefined)kind=b.dataset.kind;
+    render();
+  });
   $('#'+searchId).addEventListener('input',e=>{term=e.target.value.trim().toLowerCase(); render();});
   return {render, name:key};
 }
@@ -1311,6 +1355,8 @@ const SCHEMA={
     {k:'authors',label:'저자  (연구실 저자는 **이름** 처럼 별표로 감싸면 굵게)',type:'text'},
     {k:'venue',label:'학술지 / 학회',type:'text'},
     {k:'badges',label:'등급 배지  (연도 옆에 표기됩니다)',type:'checks',opts:BADGE_OPTS},
+    {k:'featured',label:'주요 성과로 게시판 상단에 고정',type:'toggle'},
+    {k:'featuredOrder',label:'주요 성과 표시 우선순위  (숫자가 작을수록 위)',type:'priority'},
     {k:'img',label:'대표 이미지  (목록 왼쪽 패널)',type:'image'},
     {k:'tags',label:'태그  (쉼표로 구분)',type:'tags'},
     {k:'links',label:'링크  (한 줄에 하나: URL 또는 라벨|URL)',type:'links'}]},
@@ -1318,6 +1364,8 @@ const SCHEMA={
     {k:'year',label:'연도',type:'number'},{k:'title',label:'명칭',type:'text'},
     {k:'authors',label:'발명자  (연구실 발명자는 **이름**)',type:'text'},
     {k:'venue',label:'상태 / 번호  (예: 등록 · 제10-XXXXXXX호)',type:'text'},
+    {k:'featured',label:'주요 성과로 게시판 상단에 고정',type:'toggle'},
+    {k:'featuredOrder',label:'주요 성과 표시 우선순위  (숫자가 작을수록 위)',type:'priority'},
     {k:'img',label:'대표 이미지  (목록 왼쪽 패널)',type:'image'},
     {k:'tags',label:'태그  (쉼표로 구분)',type:'tags'},{k:'links',label:'링크  (URL 또는 라벨|URL)',type:'links'}]},
   people:{title:'구성원', fields:[
@@ -1373,6 +1421,8 @@ function openForm(type, idx){
     if(f.type==='lines') return `<div class="field"><label>${esc(f.label)}</label><textarea data-k="${f.k}" data-lines="1">${esc((v||[]).join('\n'))}</textarea></div>`;
     if(f.type==='select') return `<div class="field"><label>${esc(f.label)}</label><select data-k="${f.k}">${f.opts.map(o=>`<option${v===o?' selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
     if(f.type==='checks') return `<div class="field"><label>${esc(f.label)}</label><div class="checkrow">${f.opts.map(o=>`<label class="checkopt"><input type="checkbox" data-k="${f.k}" data-multi="1" value="${esc(o)}"${(v||[]).includes(o)?' checked':''}>${esc(o)}</label>`).join('')}</div></div>`;
+    if(f.type==='toggle') return `<div class="field"><label class="checkopt"><input type="checkbox" data-k="${f.k}" data-toggle="1"${v?' checked':''}>${esc(f.label)}</label></div>`;
+    if(f.type==='priority') return `<div class="field"><label>${esc(f.label)}</label><input type="number" min="1" step="1" data-k="${f.k}" data-priority="1" value="${Math.max(1,Number(v)||1)}"></div>`;
     if(f.type==='tags') return `<div class="field"><label>${esc(f.label)}</label><input type="text" data-k="${f.k}" data-tags="1" value="${esc((v||[]).join(', '))}"></div>`;
     if(f.type==='links'){const val=(v||[]).map(l=>`${l.label}|${l.url}`).join('\n');
       return `<div class="field"><label>${esc(f.label)}</label><textarea data-k="${f.k}" data-links="1" placeholder="URL만 입력하거나, 버튼이름|URL">${esc(val)}</textarea><div class="hint" style="margin-top:5px">예: https://patents.google.com/... 또는 Google Patents|https://patents.google.com/...</div></div>`;}
@@ -1541,6 +1591,7 @@ async function saveForm(){
   $$('#modal-fields [data-k]').forEach(el=>{
     const k=el.dataset.k;
     if(el.dataset.multi){ if(!Array.isArray(obj[k]))obj[k]=[]; if(el.checked)obj[k].push(el.value); return; }
+    if(el.dataset.toggle){obj[k]=el.checked; return;}
     let val=el.value;
     if(el.dataset.tags) val=val.split(',').map(s=>s.trim()).filter(Boolean);
     else if(el.dataset.lines) val=val.split('\n').map(s=>s.trim()).filter(Boolean);
@@ -1548,6 +1599,7 @@ async function saveForm(){
       if(!line.includes('|'))return {label:'링크',url:line};
       const[label,...u]=line.split('|'); return {label:(label||'링크').trim(),url:(u.join('|')||'#').trim()};
     });
+    else if(el.dataset.priority) val=Math.max(1,Math.floor(Number(val)||1));
     else if(el.type==='number') val=Number(val)||new Date().getFullYear();
     obj[k]=val;
   });
