@@ -216,6 +216,11 @@ section{padding:84px 0}
 .pcard .deg{font-family:'IBM Plex Mono'; font-size:.72rem; color:var(--green); margin-top:3px}
 .pcard .fo{font-size:.84rem; color:var(--text-2); margin-top:9px; line-height:1.5}
 .pcard .now{font-size:.82rem; color:var(--green-deep); margin-top:7px; font-weight:500}
+.person-links{display:flex; flex-wrap:wrap; gap:6px; margin-top:12px}
+.person-link{display:inline-flex; align-items:center; gap:5px; padding:5px 8px; border:1px solid var(--line); border-radius:100px;
+  color:var(--green-deep); background:var(--mint); font-family:'IBM Plex Mono'; font-size:.64rem; font-weight:600; text-decoration:none; transition:.15s}
+.person-link svg{width:12px; height:12px; flex:0 0 auto}
+.person-link:hover{background:var(--green); border-color:var(--green); color:#fff}
 
 /* ---------- PAPERS / PATENTS ---------- */
 .pubhero{display:grid; grid-template-columns:1.05fr .95fr; gap:52px; align-items:center}
@@ -1085,7 +1090,8 @@ function renderPeople(){
     const rows=DB.people.map((p,idx)=>({p,idx})).filter(({p})=>p.group===g).map(({p,idx},i)=>`
       <article class="pcard">${actionBtns('people',idx)}<div class="ph${p.photo?' zoomable':''}"${p.photo?` data-zoom="people:${idx}" role="button" tabindex="0" aria-label="이미지 확대 보기"`:''}>${p.photo?`<img src="${esc(p.photo)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover">`:avatarSVG(i+g.length)}</div>
         <div class="info"><div class="nm">${esc(p.name)}</div><div class="deg">${esc(p.deg)}</div>
-          <div class="fo">${esc(p.focus)}</div>${p.now?`<div class="now">→ 현재: ${esc(p.now)}</div>`:''}</div></article>`).join('');
+          <div class="fo">${esc(p.focus)}</div>${p.now?`<div class="now">→ 현재: ${esc(p.now)}</div>`:''}
+          ${(p.links||[]).length?`<div class="person-links">${p.links.map(linkData).map(l=>`<a class="person-link" href="${esc(l.url)}" target="_blank" rel="noopener">${linkIcon}${esc(l.label)}</a>`).join('')}</div>`:''}</div></article>`).join('');
     return `<div class="grp-h">${esc(g)}</div><div class="people-grid">${rows}</div>`;
   }).join('');
   html+=`<div style="margin-top:26px"><button class="add-btn admin-only" data-add="people">+ 구성원 추가</button></div>`;
@@ -1372,7 +1378,8 @@ const SCHEMA={
     {k:'group',label:'구분',type:'select',opts:GROUP_ORDER},
     {k:'name',label:'이름',type:'text'},{k:'deg',label:'학위 / 직함  (예: Ph.D. Student, M.S. 2024)',type:'text'},
     {k:'photo',label:'사진',type:'image'},
-    {k:'focus',label:'연구 주제',type:'text'},{k:'now',label:'현재 소속  (졸업생만, 선택)',type:'text'}]},
+    {k:'focus',label:'연구 주제',type:'text'},{k:'now',label:'현재 소속  (졸업생만, 선택)',type:'text'},
+    {k:'links',label:'프로필 링크  (한 줄에 하나: URL 또는 라벨|URL)',type:'links'}]},
   news:{title:'소식', fields:[
     {k:'date',label:'날짜  (예: 2026.06)',type:'text'},
     {k:'cat',label:'분류',type:'select',opts:['학회','게재','수상','행사','기타']},
