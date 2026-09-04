@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MAILAB — Medical Artificial Intelligence Laboratory</title>
-<meta name="description" content="MAILAB, Medical Artificial Intelligence Laboratory, Department of ICT Convergence, University of Ulsan.">
+<title>XBRAIN Lab — eXplainable Brain-inspired Research on Artificial Intelligence Laboratory</title>
+<meta name="description" content="XBRAIN Lab, eXplainable Brain-inspired Research on Artificial Intelligence Laboratory, Department of ICT Convergence, University of Ulsan. 뇌의 정보 흐름 네트워크를 따르는 설명가능한 인공지능 연구.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- ============================================================= -->
-<!--  MAILAB 홈페이지 — 단일 HTML 파일                                -->
-<!--  ▶ 콘텐츠는 화면 우하단 "관리 모드" 버튼으로 직접 추가·수정·삭제  -->
+<!--  XBRAIN Lab 홈페이지 — 단일 HTML 파일                                -->
+<!--  ▶ 콘텐츠는 화면 우하단 "관리 모드" 버튼으로 직접 추가, 수정, 삭제  -->
 <!--    편집 후 "사이트 파일로 저장"을 누르면 변경된 index.html이       -->
 <!--    다운로드됩니다. 그 파일을 호스팅에 올리면 공개 반영됩니다.       -->
 <!--  ▶ 코드로 직접 넣고 싶으면 아래 두 script 블록의 배열을 수정.      -->
@@ -125,10 +125,11 @@ section{padding:84px 0}
 /* ---------- RESEARCH CARDS ---------- */
 .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:52px}
 .rcard{background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;
-  transition:.28s; display:flex; flex-direction:column}
+  transition:.28s; display:flex; flex-direction:column; position:relative}
 .rcard:hover{transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:var(--sage)}
 .rcard .vis{height:150px; position:relative; overflow:hidden}
-.rcard .vis svg{position:absolute; inset:0; width:100%; height:100%}
+.rcard .vis svg,.rcard .vis img{position:absolute; inset:0; width:100%; height:100%}
+.rcard .vis img{object-fit:cover}
 .rcard .body{padding:26px 24px 28px}
 .rcard .tag{font-family:'IBM Plex Mono'; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--green); font-weight:500}
 .rcard h3{font-size:1.22rem; margin:11px 0 4px}
@@ -139,17 +140,73 @@ section{padding:84px 0}
 .rcard li::before{content:""; position:absolute; left:0; top:9px; width:7px; height:7px; border-radius:2px;
   background:linear-gradient(135deg,var(--green),var(--yellow))}
 
-/* ---------- SPLIT / APPROACH ---------- */
-.split{display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center}
-.feature-list{margin-top:30px; display:grid; gap:2px}
-.frow{display:flex; gap:16px; padding:20px 4px; border-top:1px solid var(--line-dk)}
-.frow .ic{flex:0 0 44px; width:44px; height:44px; border-radius:11px; display:grid; place-items:center;
-  background:rgba(182,224,198,.18); color:var(--yellow-2)}
-.frow h4{font-size:1.04rem; font-family:'Inter'; font-weight:600}
-.frow p{color:var(--inv-2); font-size:.92rem; margin-top:4px}
-.showcase{border-radius:var(--radius); overflow:hidden; border:1px solid var(--line-dk); background:rgba(255,255,255,.04);
-  aspect-ratio:5/4; position:relative}
-.showcase svg{width:100%; height:100%}
+/* ---------- RESEARCH PIPELINE (figure plate on dark) ---------- */
+.plate{margin:54px 0 0; padding:0}
+.flow{display:grid; grid-template-columns:1fr auto 1fr auto 1fr; align-items:stretch}
+.pnode{border:1px solid rgba(34,184,114,.32); border-radius:var(--radius); padding:26px 24px 25px;
+  background:rgba(34,184,114,.08)}
+.pnode .idx{font-family:'IBM Plex Mono'; font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--green-2)}
+.pnode .hd{min-height:5.1rem}
+.pnode h3{font-size:1.14rem; color:#fff; margin:11px 0 3px}
+.pnode .kr{font-family:'IBM Plex Mono'; font-size:.75rem; color:var(--inv-2); opacity:.85}
+.pnode dl{margin:18px 0 0; padding-top:17px; border-top:1px solid rgba(255,255,255,.1)}
+.pnode dt{font-size:.9rem; font-weight:600; color:#fff; margin-top:15px}
+.pnode dt:first-child{margin-top:0}
+.pnode dt em{font-family:'IBM Plex Mono'; font-style:normal; font-size:.6rem; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--green-2); border:1px solid rgba(34,184,114,.4);
+  border-radius:5px; padding:1px 6px; margin-left:7px; position:relative; top:-1px}
+.pnode dd{margin:3px 0 0; font-size:.86rem; color:var(--inv-2); line-height:1.6}
+
+.pedge{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+  padding:0 22px; min-width:142px; color:var(--green-2)}
+.pedge .el{font-family:'IBM Plex Mono'; font-size:.61rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--inv-2); opacity:.8; white-space:nowrap}
+.arw{display:flex; align-items:center; width:100%}
+.arw i{flex:1; height:2.5px; border-radius:2px;
+  background:repeating-linear-gradient(90deg,currentColor 0 8px,transparent 8px 14px);
+  animation:flowx 2.6s linear infinite}
+.arw svg{flex:0 0 auto; margin-left:2px}
+@keyframes flowx{to{background-position-x:14px}}
+@keyframes flowy{to{background-position-y:14px}}
+
+.ploop{position:relative; height:76px; margin:0 14%;
+  border:2.5px dashed rgba(249,206,110,.5); border-top:0; border-radius:0 0 18px 18px}
+.ploop.drawn{border-color:transparent}   /* 파선을 .loopline SVG가 대신 그림 */
+.loopline{position:absolute; inset:0; width:100%; height:100%; overflow:visible}
+.loopline path{fill:none; stroke:rgba(249,206,110,.6); stroke-width:2.5; stroke-linecap:round;
+  stroke-dasharray:8 6; animation:flowdash 2.6s linear infinite}
+@keyframes flowdash{to{stroke-dashoffset:-14}}
+.ploop .up{position:absolute; left:-8px; top:-7px; color:var(--yellow-2)}
+.ploop .cap{position:absolute; left:50%; bottom:0; transform:translate(-50%,50%); background:var(--green-ink);
+  padding:0 16px; display:flex; align-items:center; gap:12px; white-space:nowrap}
+.ploop .cap b{font-family:'IBM Plex Mono'; font-size:.61rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--yellow-2); font-weight:500}
+.ploop .cap span{font-size:.83rem; color:var(--inv-2)}
+
+.pvision{margin:52px 0 0; padding-top:34px; border-top:1px solid rgba(255,255,255,.12)}
+.pvision .el{font-family:'IBM Plex Mono'; font-size:.61rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--green-2); display:block; margin-bottom:14px}
+/* 비전 선언문: 이 블록의 주장. 아래 목표들보다 한 단계 큰 활자로 둔다. */
+.pv-stmt .lead{font-size:1.22rem; color:#fff; line-height:1.58; font-weight:600; letter-spacing:-.01em;
+  max-width:62ch}
+/* 세부 목표: 선언문과 같은 가로선에 두면 동일 위계로 읽히므로, 아래로 내려 들여쓰고 세로선을 둔다. */
+.pv-goals{margin-top:32px; padding-left:26px; border-left:2px solid rgba(34,184,114,.35)}
+.pv-bridge{font-family:'IBM Plex Mono'; font-size:.68rem; letter-spacing:.14em; color:var(--inv-2);
+  opacity:.85; font-weight:500; margin:0 0 17px}
+.pv-goals dl{margin:0; display:grid; grid-template-columns:1fr 1fr; gap:22px 46px}
+.pv-goals dt{font-size:.94rem; font-weight:600; color:#fff; display:flex; align-items:baseline; gap:10px}
+.pv-goals dt::before{content:""; flex:0 0 auto; width:7px; height:7px; border-radius:2px; position:relative; top:-2px;
+  background:linear-gradient(135deg,var(--green),var(--yellow))}
+.pv-goals dd{margin:5px 0 0 17px; font-size:.87rem; color:var(--inv-2); line-height:1.6}
+
+.plate.armed .rv{opacity:0; transform:translateY(15px);
+  transition:opacity .75s cubic-bezier(.22,.61,.36,1) var(--d,0s), transform .75s cubic-bezier(.22,.61,.36,1) var(--d,0s)}
+.plate.armed.in .rv{opacity:1; transform:none}
+@media (prefers-reduced-motion:reduce){
+  .arw i,.loopline path{animation:none}
+  .plate.armed .rv{opacity:1; transform:none; transition:none}
+}
 
 /* ---------- NEWS (home preview + full) ---------- */
 .news-home{margin-top:44px; display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
@@ -308,8 +365,11 @@ section{padding:84px 0}
   background:radial-gradient(600px 300px at 30% 0%, rgba(34,184,114,.4), transparent 60%),
              radial-gradient(500px 300px at 90% 100%, rgba(243,182,60,.25), transparent 60%)}
 .ctaband > *{position:relative; z-index:2}
-.ctaband h2{font-size:clamp(1.8rem,3.2vw,2.6rem)}
-.ctaband p{color:var(--inv-2); margin:16px auto 30px; max-width:48ch}
+.ctaband .eyebrow{font-size:.88rem; letter-spacing:.2em}
+.ctaband .eyebrow::before,.ctaband .eyebrow::after{width:26px; background:currentColor}
+.ctaband .eyebrow::after{content:""; height:1.5px; display:inline-block}
+.ctaband h2{font-size:clamp(1.6rem,2.5vw,2.1rem); line-height:1.32; margin-top:20px}
+.ctaband p{color:var(--inv-2); margin:18px auto 32px; max-width:48ch}
 
 /* ---------- FOOTER ---------- */
 footer{background:var(--green-ink); color:var(--inv-2); padding:64px 0 34px}
@@ -416,7 +476,25 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
 /* ---------- RESPONSIVE ---------- */
 @media(max-width:920px){
   .grid-3,.people-grid,.news-grid,.news-home{grid-template-columns:repeat(2,1fr)}
-  .split,.prof,.pubhero,.contact-grid,.foot-top{grid-template-columns:1fr; gap:40px}
+  .flow{grid-template-columns:1fr}
+  .pedge{flex-direction:column; min-width:0; padding:18px 0}
+  .arw{flex-direction:column; width:auto; height:46px}
+  .arw i{width:2.5px; height:auto; background:repeating-linear-gradient(180deg,currentColor 0 8px,transparent 8px 14px);
+    animation-name:flowy}
+  .arw svg{margin:1px 0 0; transform:rotate(90deg)}
+  .ploop{height:auto; margin:24px 0 0; border-top:2.5px dashed rgba(249,206,110,.5); border-radius:14px;
+    padding:16px 18px; display:flex; align-items:center; gap:11px}
+  .ploop.drawn{border-color:rgba(249,206,110,.5)}
+  .loopline{display:none}
+  .ploop .up{position:static; flex:0 0 auto}
+  .ploop .cap{position:static; transform:none; background:none; padding:0; white-space:normal;
+    flex-wrap:wrap; gap:4px 12px}
+  .pnode .hd{min-height:0}
+  .pvision{margin-top:40px}
+  .pv-stmt .lead{font-size:1.12rem}
+  .pv-goals{margin-top:26px; padding-left:18px}
+  .pv-goals dl{grid-template-columns:1fr; gap:19px}
+  .prof,.pubhero,.contact-grid,.foot-top{grid-template-columns:1fr; gap:40px}
   .prof-card{position:static}
   .stats{grid-template-columns:repeat(2,1fr); gap:28px}
   .menu{position:fixed; inset:70px 0 auto; flex-direction:column; align-items:stretch; background:var(--paper);
@@ -450,7 +528,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
         <path d="M12 14 L20 26 M28 12 L20 26 M20 26 L30 27 M12 14 L28 12" stroke="#fff" stroke-opacity=".55" stroke-width="1.4"/>
         <defs><linearGradient id="bg" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#0E9D57"/><stop offset="1" stop-color="#0A6E42"/></linearGradient></defs>
       </svg>
-      <span>MAILAB<small>MEDICAL AI LAB · UOU</small></span>
+      <span>XBRAIN Lab<small>eXplainable Brain-inspired AI Lab, UOU</small></span>
     </div>
     <div class="menu" id="menu">
       <a data-go="home" class="active">Home</a>
@@ -472,11 +550,14 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
   <section class="hero">
     <canvas id="neural"></canvas>
     <div class="wrap">
-      <span class="hero-badge"><span class="dot"></span> Department of ICT Convergence · <b>University of Ulsan</b></span>
-      <h1>의료의 미래를<br>여는 <span class="grad">인공지능</span></h1>
-      <p class="hero-lead">MAILAB은 의료 인공지능 개발을 목표로, 의료 영상·생체 신호·뇌-컴퓨터 인터페이스를 아우르는
-        <b>설명 가능하고 신뢰할 수 있는 AI</b>를 연구합니다.
-        We build interpretable medical AI — from brain signals to clinical decisions.</p>
+      <span class="hero-badge"><span class="dot"></span> Department of ICT Convergence, <b>University of Ulsan</b></span>
+      <h1>뇌의 정보 흐름 네트워크를<br>따르는 <span class="grad">설명가능 인공지능</span></h1>
+      <p class="hero-lead">XBRAIN Lab은 뇌의 정보 흐름 메커니즘을 AI 구조에 직접 반영합니다.
+        <b>생체신호와 의료 영상 분석에서 출발해 뇌 연결성을 모방한 멀티 에이전트 구조와 최적 아키텍처 자동 설계까지</b>,
+        하나의 순환 파이프라인으로 연구하고 같은 방법론을 산업 센서와 공정 데이터로 확장합니다. <br>
+        We build explainable, brain-inspired AI.
+        <b>From biosignal and medical image analysis to multi-agent networks and automated architecture search</b>,
+        we study one closed loop — and extend the same methods to industrial sensor data.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" data-go="papers">연구 성과 보기
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
@@ -491,33 +572,102 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
     </div>
   </section>
 
-  <section>
+  <!-- ---------- RESEARCH PIPELINE ---------- -->
+  <section class="dark">
     <div class="wrap">
-      <span class="eyebrow">Research Areas</span>
-      <h2 class="section-h" style="max-width:none; white-space:nowrap">신호에서 진단까지, 세 개의 연구 축</h2>
-      <p class="section-sub">MAILAB은 의료 데이터의 수집·분석부터 임상 의사결정 지원, 그리고 뇌와 기계를 잇는 인터페이스까지 의료 AI의 전 주기를 연구합니다.</p>
-      <div class="grid-3" id="research-cards"></div>
+      <span class="eyebrow">Research Pipeline</span>
+      <h2 class="section-h" style="color:#fff">신호에서 아키텍처까지,<br>지속 진화하는 순환형 연구 구조</h2>
+      <p class="section-sub">뇌의 정보 흐름 메커니즘을 AI 구조에 직접 반영합니다. 데이터에서 추출한 잠재 특징과 연결성이 AI 아키텍처의 설계 근거가 되고, 그 출력은 다시 분석 단계로 되돌아옵니다. 이 순환 피드백 위에서 연구가 한 주기마다 스스로 정밀해집니다.</p>
+
+      <div class="plate" id="plate">
+        <div class="flow">
+          <article class="pnode rv">
+            <div class="idx">01 — Input</div>
+            <div class="hd">
+              <h3>Signal &amp; Image Data</h3>
+              <div class="kr">신호와 영상 데이터</div>
+            </div>
+            <dl>
+              <dt>의료<em>주력</em></dt><dd>EEG와 ECG 생체신호, fMRI와 CT, MRI 영상</dd>
+              <dt>산업<em>확장</em></dt><dd>설비 센서와 진동 신호, 공정 검사 영상</dd>
+              <dt>공통 구조</dt><dd>시계열 + 영상 + 관계 그래프</dd>
+            </dl>
+          </article>
+
+          <div class="pedge rv" style="--d:.08s"><span class="el">Extraction</span>
+            <span class="arw"><i></i><svg width="11" height="14" viewBox="0 0 11 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 2.2 8 7l-6 4.8"/></svg></span></div>
+
+          <article class="pnode rv" style="--d:.16s">
+            <div class="idx">02 — Analysis</div>
+            <div class="hd">
+              <h3>Latent Feature &amp; Connectivity</h3>
+              <div class="kr">잠재 특징과 연결성 분석</div>
+            </div>
+            <dl>
+              <dt>시공간 패턴 분석</dt><dd>다채널 신호와 영상의 잠재 동적 특성 추출</dd>
+              <dt>네트워크 분석</dt><dd>뇌 영역과 센서 노드 간 위상, 연결성 도출</dd>
+              <dt>기반 방법<em>GNN</em></dt><dd>뇌 기능적 연결성(wPLI) 추정과 그래프 신경망 학습</dd>
+            </dl>
+          </article>
+
+          <div class="pedge rv" style="--d:.24s"><span class="el">Integration</span>
+            <span class="arw"><i></i><svg width="11" height="14" viewBox="0 0 11 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 2.2 8 7l-6 4.8"/></svg></span></div>
+
+          <article class="pnode rv" style="--d:.32s">
+            <div class="idx">03 — Engine</div>
+            <div class="hd">
+              <h3>Brain-Inspired AI</h3>
+              <div class="kr">뇌 기반 AI 엔진</div>
+            </div>
+            <dl>
+              <dt>Multi-Agent Graph AI</dt><dd>뇌 매핑 기반 분산 에이전트 구조</dd>
+              <dt>에이전트 자율 협력</dt><dd>노드 간 실시간 정보 교환</dd>
+              <dt>최적 아키텍처<em>NAS</em></dt><dd>가볍고 성능 높은 구조 자동 설계</dd>
+            </dl>
+          </article>
+        </div>
+
+        <div class="ploop rv" id="ploop" style="--d:.42s">
+          <svg class="loopline" aria-hidden="true" preserveAspectRatio="none"><path d=""/></svg>
+          <svg class="up" width="15" height="11" viewBox="0 0 15 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.2 8.4 7.5 3l5.3 5.4"/></svg>
+          <div class="cap"><b>Feedback</b><span>AI Engine 출력 → 신호 분석 파라미터 재정밀화, 모델 가중치 동기화</span></div>
+        </div>
+
+        <div class="pvision rv" style="--d:.5s">
+          <div class="pv-stmt">
+            <span class="el">Research Vision</span>
+            <p class="lead">뇌의 정보 흐름 메커니즘을 AI 구조에 직접 반영해,
+              순환 피드백으로 스스로 진화하는 AI 체계를 구축합니다.</p>
+          </div>
+          <div class="pv-goals">
+            <p class="pv-bridge">세부 목표</p>
+            <dl>
+              <div>
+                <dt>연산 경량화 및 에너지 고효율</dt>
+                <dd>동일 성능을 더 적은 연산과 전력으로 달성하는 구조를 설계합니다.</dd>
+              </div>
+              <div>
+                <dt>뇌 신호와 AI의 실시간 동기화</dt>
+                <dd>생체신호 계측과 모델 상태 갱신을 실시간으로 결합합니다.</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
-  <section class="dark">
-    <div class="wrap split">
-      <div>
-        <span class="eyebrow">Our Approach</span>
-        <h2 class="section-h" style="color:#fff">사후 설명이 아니라,<br>설계부터 해석 가능한 AI</h2>
-        <p class="section-sub">벤치마크 점수를 좇기보다, 왜 그런 판단을 내렸는지 임상의가 신뢰할 수 있는 원리 중심의 방법론을 지향합니다.</p>
-        <div class="feature-list">
-          <div class="frow"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg></div>
-            <div><h4>Interpretable by Design</h4><p>프로토타입·희소 어텐션·물리기반 제약 등 본질적으로 설명 가능한 구조를 설계합니다.</p></div></div>
-          <div class="frow"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="12" cy="18" r="2.5"/><path d="M7.5 7.5 11 15.5M16.5 7.5 13 15.5M8 6h8"/></svg></div>
-            <div><h4>Graph &amp; Connectivity</h4><p>뇌 기능적 연결성(wPLI)과 그래프 신경망으로 신경·생리 신호의 구조를 모델링합니다.</p></div></div>
-          <div class="frow"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
-            <div><h4>Signal to Clinic</h4><p>EEG·OCTA·CT 등 실제 임상 데이터로 검증하며 병원과 함께 연구합니다.</p></div></div>
-        </div>
-      </div>
-      <div class="showcase" id="showcase-art"></div>
+  <section>
+    <div class="wrap">
+      <span class="eyebrow">Research Areas</span>
+      <h2 class="section-h" style="max-width:24ch">단계별 연구 축</h2>
+      <p class="section-sub">각 축은 독립된 연구 주제이면서 앞뒤 단계와 데이터와 구조를 주고받습니다.</p>
+      <div class="grid-3" id="research-cards"></div>
+      <div style="margin-top:26px"><button class="add-btn admin-only" data-add="research">+ 연구 축 추가</button></div>
     </div>
   </section>
+
 
   <section class="mist">
     <div class="wrap">
@@ -532,10 +682,10 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
   <section>
     <div class="wrap">
       <div class="ctaband">
-        <span class="eyebrow" style="justify-content:center; color:var(--yellow-2)">Join MAILAB</span>
-        <h2>의료 AI의 다음 장을 함께 쓸<br>연구원을 찾습니다</h2>
-        <p>학부 인턴 · 석사 · 박사 과정 모집. 뇌신호, 의료영상, 설명가능 AI에 관심 있는 분을 환영합니다.</p>
-        <a class="btn btn-primary" data-go="contact">지원 · 문의하기</a>
+        <span class="eyebrow" style="justify-content:center; color:var(--yellow-2)">Join XBRAIN Lab</span>
+        <h2>뇌 기반 AI의 다음 장을 함께 쓸<br>연구원을 찾습니다</h2>
+        <p>학부 인턴, 석사, 박사 과정 모집. 뇌신호와 의료 영상 분석, 그래프 연결성, 멀티 에이전트, 설명가능 AI에 관심 있는 분을 환영합니다.</p>
+        <a class="btn btn-primary" data-go="contact">지원 문의하기</a>
       </div>
     </div>
   </section>
@@ -560,7 +710,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
     <div class="wrap">
       <span class="eyebrow">The Team</span>
       <h2 class="section-h">함께 연구하는 사람들</h2>
-      <p class="section-sub">호기심과 끈기로 의료 AI의 어려운 문제에 도전하는 MAILAB 구성원과 졸업생을 소개합니다.</p>
+      <p class="section-sub">호기심과 끈기로 뇌 기반 AI의 어려운 문제에 도전하는 XBRAIN Lab 구성원과 졸업생을 소개합니다.</p>
       <div id="people-groups"></div>
     </div>
   </section>
@@ -572,7 +722,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
     <div class="wrap">
       <span class="eyebrow">Lab News</span>
       <h2 class="section-h">연구실 소식</h2>
-      <p class="section-sub">국제 학회 참석·발표, 논문 게재, 수상, 연구실 행사 등 MAILAB의 활동 소식을 사진과 함께 전합니다.</p>
+      <p class="section-sub">국제 학회 참석과 발표, 논문 게재, 수상, 연구실 행사 등 XBRAIN Lab의 활동 소식을 사진과 함께 전합니다.</p>
       <div class="board-bar" style="margin-top:34px">
         <div class="filters" id="news-filters"></div>
       </div>
@@ -588,7 +738,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
       <div>
         <span class="eyebrow">Publications</span>
         <h2 class="section-h" style="color:#fff">peer-reviewed 논문으로<br>검증하는 연구</h2>
-        <p class="section-sub">MAILAB의 연구는 국제 학술지와 학회를 통해 공개·검증됩니다. 뇌신호 해석, 그래프 기반 연결성, 의료 영상 분석, 설명가능 AI를 중심으로 성과를 축적하고 있습니다.</p>
+        <p class="section-sub">XBRAIN Lab의 연구는 국제 학술지와 학회를 통해 공개되고 검증됩니다. 뇌신호 해석과 그래프 기반 연결성, 의료 영상 분석, 멀티 에이전트 구조와 설명가능 AI를 중심으로 성과를 축적하고 있습니다.</p>
         <div class="mini-stats">
           <div><div class="n" id="pp-count">–</div><div class="l">TOTAL PAPERS</div></div>
           <div><div class="n" id="pp-q1">–</div><div class="l">Q1 JOURNALS</div></div>
@@ -605,7 +755,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
       <div class="board-bar">
         <div class="filters" id="paper-filters"></div>
         <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input type="text" id="paper-search" placeholder="제목 · 저자 · 학술지 검색…" aria-label="논문 검색"></label>
+          <input type="text" id="paper-search" placeholder="제목, 저자, 학술지 검색…" aria-label="논문 검색"></label>
       </div>
       <div class="board" id="paper-board"></div>
     </div>
@@ -619,7 +769,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
       <div>
         <span class="eyebrow">Patents</span>
         <h2 class="section-h" style="color:#fff">연구를 기술로,<br>기술을 지식재산으로</h2>
-        <p class="section-sub">MAILAB의 핵심 방법론은 특허로 보호되어 산업 현장으로 이어집니다. 진단 보조, 신호 분석, 의료 영상 처리 분야의 지식재산을 확보하고 있습니다.</p>
+        <p class="section-sub">XBRAIN Lab의 핵심 방법론은 특허로 보호되어 산업 현장으로 이어집니다. 진단 보조, 생체신호 분석, 의료 영상 처리, 설비 센서 기반 공정 분석 분야의 지식재산을 확보하고 있습니다.</p>
         <div class="mini-stats">
           <div><div class="n" id="pt-count">–</div><div class="l">TOTAL PATENTS</div></div>
           <div><div class="n" id="pt-reg">–</div><div class="l">REGISTERED</div></div>
@@ -637,7 +787,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
       <div class="board-bar">
         <div class="filters" id="patent-filters"></div>
         <label class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input type="text" id="patent-search" placeholder="명칭 · 발명자 · 번호 검색…" aria-label="특허 검색"></label>
+          <input type="text" id="patent-search" placeholder="명칭, 발명자, 번호 검색…" aria-label="특허 검색"></label>
       </div>
       <div class="board" id="patent-board"></div>
     </div>
@@ -648,7 +798,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
 <div class="page" id="contact">
   <section>
     <div class="wrap">
-      <span class="eyebrow">Contact · Join the Lab</span>
+      <span class="eyebrow">Contact & Join the Lab</span>
       <h2 class="section-h">연락 및 지원 문의</h2>
       <p class="section-sub">공동연구, 대학원 진학, 학부 인턴 등 어떤 문의든 환영합니다. 아래 양식을 작성하시거나 이메일로 연락 주세요.</p>
       <div class="contact-grid" style="margin-top:52px">
@@ -658,14 +808,14 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
           <div class="item"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
             <div><h4>Email</h4><div class="big"><a href="mailto:leeseho@ulsan.ac.kr" style="color:var(--green)">leeseho@ulsan.ac.kr</a></div></div></div>
           <div class="item"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2a7 7 0 0 0-4 12.7V17a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2v-2.3A7 7 0 0 0 12 2Z"/><path d="M9 21h6"/></svg></div>
-            <div><h4>Lab</h4><div class="big">Medical AI Laboratory (MAILAB)<br>ICT융합학부</div></div></div>
+            <div><h4>Lab</h4><div class="big">XBRAIN Lab<br>eXplainable Brain-inspired Research on Artificial Intelligence<br>ICT융합학부</div></div></div>
           <div class="map"><iframe title="University of Ulsan map" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=University+of+Ulsan&output=embed"></iframe></div>
         </div>
         <div class="cform">
           <div class="field"><label for="c-name">이름 / Name</label><input id="c-name" type="text" placeholder="홍길동"></div>
           <div class="field"><label for="c-email">이메일 / Email</label><input id="c-email" type="email" placeholder="you@example.com"></div>
           <div class="field"><label for="c-role">구분 / Inquiry Type</label>
-            <select id="c-role"><option>학부 인턴 문의</option><option>대학원(석·박사) 진학</option><option>공동연구 제안</option><option>기타 문의</option></select></div>
+            <select id="c-role"><option>학부 인턴 문의</option><option>대학원(석사, 박사) 진학</option><option>공동연구 제안</option><option>기타 문의</option></select></div>
           <div class="field"><label for="c-msg">메시지 / Message</label><textarea id="c-msg" placeholder="관심 연구 분야와 배경을 간단히 적어주세요."></textarea></div>
           <button class="btn btn-primary" id="c-send" style="width:100%; justify-content:center">이메일로 보내기
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
@@ -689,9 +839,9 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
             <path d="M12 14 L20 26 M28 12 L20 26 M12 14 L28 12" stroke="#fff" stroke-opacity=".55" stroke-width="1.4"/>
             <defs><linearGradient id="bg2" x1="0" y1="0" x2="40" y2="40"><stop stop-color="#0E9D57"/><stop offset="1" stop-color="#0A6E42"/></linearGradient></defs>
           </svg>
-          <span style="font-family:'Space Grotesk'; font-weight:700; font-size:1.18rem">MAILAB</span>
+          <span style="font-family:'Space Grotesk'; font-weight:700; font-size:1.18rem">XBRAIN Lab</span>
         </div>
-        <p>Medical Artificial Intelligence Laboratory · Department of ICT Convergence, University of Ulsan. 설명 가능하고 신뢰할 수 있는 의료 AI를 연구합니다.</p>
+        <p>eXplainable Brain-inspired Research on Artificial Intelligence — Department of ICT Convergence, University of Ulsan. 뇌의 정보 흐름 네트워크를 따르는 설명가능한 인공지능을 연구합니다.</p>
       </div>
       <div class="fcol"><h5>Navigate</h5>
         <a data-go="home">Home</a><a data-go="professor">Professor</a><a data-go="people">People</a>
@@ -704,8 +854,8 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
       </div>
     </div>
     <div class="foot-bot">
-      <small>© 2026 MAILAB · Medical Artificial Intelligence Laboratory. All rights reserved.</small>
-      <small>Department of ICT Convergence · University of Ulsan</small>
+      <small>© 2026 XBRAIN Lab — eXplainable Brain-inspired Research on Artificial Intelligence Laboratory. All rights reserved.</small>
+      <small>Department of ICT Convergence, University of Ulsan</small>
     </div>
   </div>
 </footer>
@@ -715,6 +865,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
 <div class="adminbar" id="adminbar">
   <span class="tag"><span class="dot"></span>편집 중</span>
   <button class="abtn primary" id="ab-export">사이트 파일로 저장</button>
+  <button class="abtn" id="ab-assets">사진 분리 저장</button>
   <button class="abtn" id="ab-pw">비밀번호 변경</button>
   <button class="abtn" id="ab-reset">초기화</button>
   <button class="abtn" id="ab-done">완료</button>
@@ -765,22 +916,6 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
   </div>
 </div>
 
-<!-- ============================================================= -->
-<!--  STATIC DATA (연구 분야 카드 — 편집 UI 대상 아님)               -->
-<!-- ============================================================= -->
-<script id="static-data">
-const RESEARCH = [
-  { tag:"Health Informatics", ko:"의료정보", en:"Health Informatics",
-    desc:"건강 데이터를 수집·저장·분석하여 의료 서비스의 질을 높입니다. EMR, 원격의료 시스템 등을 포함합니다.",
-    items:["의료 빅데이터 관리·분석","원격 의료 시스템 개발","개인 맞춤형 건강관리 플랫폼"], hue:"a" },
-  { tag:"Clinical Decision Support", ko:"의료 결정 지원 시스템", en:"CDSS",
-    desc:"AI와 빅데이터로 의료진의 의사결정을 지원해 정확한 진단과 최적 치료를 제시합니다.",
-    items:["AI 기반 진단 알고리즘","의료 영상·신호 처리","설명가능 의료 진단 AI"], hue:"b" },
-  { tag:"Brain-Computer Interface", ko:"뇌-컴퓨터 인터페이스", en:"BCI",
-    desc:"뇌와 컴퓨터를 연결해 기계를 구동합니다. 신경과학·컴퓨터공학·의공학의 융합 연구입니다.",
-    items:["뇌파 신호 분석·해석","신경 인터페이스 장치 개발","BCI 기반 보조 기술"], hue:"c" },
-];
-</script>
 
 <!-- ============================================================= -->
 <!--  EDITABLE DATA — "관리 모드"로 편집됩니다. 직접 수정도 가능.      -->
@@ -790,19 +925,19 @@ const RESEARCH = [
 const NEWS = [
   { date:"2026.06", cat:"학회", title:"국제 학회 참석 및 포스터 발표", body:"해외에서 열린 국제 학회에 참석해 EEG 기반 BCI 연구 결과를 포스터로 발표했습니다.", img:"" },
   { date:"2026.05", cat:"게재", title:"파킨슨병 EEG 연결성 논문 게재 확정", body:"뇌 기능적 연결성과 그래프 신경망을 활용한 파킨슨병 연구가 국제 저널에 게재 확정되었습니다.", img:"" },
-  { date:"2026.04", cat:"수상", title:"교내 우수연구상 수상", body:"설명가능 의료 AI 연구 성과를 인정받아 교내 우수연구상을 수상했습니다.", img:"" },
-  { date:"2026.03", cat:"행사", title:"신입 구성원 환영 워크숍", body:"새 학기를 맞아 신입 대학원생·인턴 환영 워크숍을 진행했습니다.", img:"" },
+  { date:"2026.04", cat:"수상", title:"교내 우수연구상 수상", body:"설명가능 뇌 기반 AI 연구 성과를 인정받아 교내 우수연구상을 수상했습니다.", img:"" },
+  { date:"2026.03", cat:"행사", title:"신입 구성원 환영 워크숍", body:"새 학기를 맞아 신입 대학원생과 인턴 환영 워크숍을 진행했습니다.", img:"" },
 ];
 
 /* 구성원: group(Ph.D. Students/M.S. Students/Undergraduate Interns/Alumni), name, deg, focus, now(졸업생 현재 소속, 선택) */
 const PEOPLE = [
-  { group:"Ph.D. Students", name:"[성함]", deg:"Ph.D. Candidate", focus:"EEG 기반 BCI · 설명가능 AI", now:"" },
-  { group:"Ph.D. Students", name:"[성함]", deg:"Ph.D. Student", focus:"GNN 기능적 연결성 · 파킨슨병", now:"" },
-  { group:"M.S. Students", name:"[성함]", deg:"M.S. Student", focus:"의료영상 분석 (OCTA · CT)", now:"" },
-  { group:"M.S. Students", name:"[성함]", deg:"M.S. Student", focus:"추천 시스템 · 그래프 학습", now:"" },
+  { group:"Ph.D. Students", name:"[성함]", deg:"Ph.D. Candidate", focus:"EEG 기반 BCI, 설명가능 AI", now:"" },
+  { group:"Ph.D. Students", name:"[성함]", deg:"Ph.D. Student", focus:"GNN 기능적 연결성, 파킨슨병", now:"" },
+  { group:"M.S. Students", name:"[성함]", deg:"M.S. Student", focus:"의료영상 분석 (OCTA, CT)", now:"" },
+  { group:"M.S. Students", name:"[성함]", deg:"M.S. Student", focus:"추천 시스템, 그래프 학습", now:"" },
   { group:"M.S. Students", name:"[성함]", deg:"M.S. Student", focus:"물리기반 신경망 (PINN)", now:"" },
-  { group:"Undergraduate Interns", name:"[성함]", deg:"Intern", focus:"데이터 전처리 · 시각화", now:"" },
-  { group:"Undergraduate Interns", name:"[성함]", deg:"Intern", focus:"모델 구현 · 실험", now:"" },
+  { group:"Undergraduate Interns", name:"[성함]", deg:"Intern", focus:"데이터 전처리, 시각화", now:"" },
+  { group:"Undergraduate Interns", name:"[성함]", deg:"Intern", focus:"모델 구현, 실험", now:"" },
   { group:"Alumni", name:"[졸업생]", deg:"M.S. 2024", focus:"EEG 신호 분류", now:"삼성전자" },
   { group:"Alumni", name:"[졸업생]", deg:"Ph.D. 2023", focus:"GNN 기반 연결성", now:"OO대 박사후연구원" },
 ];
@@ -831,29 +966,43 @@ const PAPERS = [
 
 const PATENTS = [
   { year:2025, title:"뇌파 기능적 연결성 기반 신경질환 진단 보조 장치 및 방법",
-    authors:"**발명자 A**, 발명자 B", venue:"등록 · 제10-XXXXXXX호", tags:["등록","EEG","진단보조"], links:[{label:"KIPRIS",url:"#"}] },
+    authors:"**발명자 A**, 발명자 B", venue:"등록 제10-XXXXXXX호", tags:["등록","EEG","진단보조"], links:[{label:"KIPRIS",url:"#"}] },
   { year:2025, title:"프로토타입 기반 설명가능 생체신호 분류 시스템",
-    authors:"**발명자 A**", venue:"출원 · 제10-2025-XXXXXXX호", tags:["출원","XAI","신호분류"], links:[{label:"KIPRIS",url:"#"}] },
+    authors:"**발명자 A**", venue:"출원 제10-2025-XXXXXXX호", tags:["출원","XAI","신호분류"], links:[{label:"KIPRIS",url:"#"}] },
   { year:2024, title:"OCTA 영상의 미세혈관 산소 수송 추정 방법",
-    authors:"발명자 C, **발명자 A**", venue:"등록 · 제10-XXXXXXX호", tags:["등록","OCTA","의료영상"], links:[{label:"KIPRIS",url:"#"}] },
+    authors:"발명자 C, **발명자 A**", venue:"등록 제10-XXXXXXX호", tags:["등록","OCTA","의료영상"], links:[{label:"KIPRIS",url:"#"}] },
   { year:2024, title:"그래프 신경망을 이용한 운동심상 분류 장치",
-    authors:"**발명자 A**, 발명자 D", venue:"출원 · 제10-2024-XXXXXXX호", tags:["출원","GNN","BCI"], links:[{label:"KIPRIS",url:"#"}] },
+    authors:"**발명자 A**, 발명자 D", venue:"출원 제10-2024-XXXXXXX호", tags:["출원","GNN","BCI"], links:[{label:"KIPRIS",url:"#"}] },
+];
+
+/* 연구 축 카드. img: 카드 상단 그림 — 관리 모드의 "수정"에서 올리거나 URL을 넣을 수 있고,
+   비워두면 hue(a/b/c) 기본 그라데이션 타일이 표시됩니다. */
+const RESEARCH = [
+  { tag:"Signal, Image & Graph", ko:"신호와 영상, 그래프 분석", en:"Signal, Image & Graph Analysis",
+    desc:"EEG와 ECG 생체신호, fMRI와 CT, MRI 의료 영상에서 동적 특징을 추출하고, 데이터 간 관계를 그래프로 구성합니다. 동일한 구조를 산업 센서와 공정 데이터로 확장합니다.",
+    items:["생체신호 분석: EEG와 ECG 시계열 동적 특징 추출","의료 영상 처리: fMRI와 CT, MRI 고차원 영상 분석","산업 확장: 설비 센서와 진동 신호, 공정 검사 영상","Graph 연계: 데이터 간 동적 네트워크 구성"], hue:"a", art:"신호 영상 그래프", img:"" },
+  { tag:"Latent Feature & Connectivity", ko:"잠재 특징과 연결성 분석", en:"Pattern & Network Analysis",
+    desc:"다채널 신호와 영상에 숨은 잠재 동적 특성을 시공간 패턴으로 추출하고, 뇌 영역과 센서 노드 사이의 위상과 연결성을 도출합니다.",
+    items:["시공간 패턴 분석: 잠재 동적 특성 추출","네트워크 분석: 노드 간 위상과 연결성 도출","뇌 기능적 연결성(wPLI)과 그래프 신경망(GNN)","임상 데이터 검증: EEG, OCTA, CT"], hue:"b", art:"연결성 네트워크", img:"" },
+  { tag:"Brain-Inspired AI", ko:"뇌 기반 AI 아키텍처", en:"Multi-Agent & Architecture Search",
+    desc:"뇌 매핑을 모방한 분산 에이전트가 실시간으로 협력하고, 가볍고 성능 높은 AI 구조를 자동으로 설계합니다. 사후 설명이 아니라 설계 단계부터 해석 가능한 구조를 지향합니다.",
+    items:["Brain Network Topology: 뇌 정보 전달 구조 모방","Multi-Agent 시스템: 에이전트 간 자율 협력 모델링","최적 AI 아키텍처(NAS): 가볍고 에너지 효율 높은 고성능 구조 자동 구축","Interpretable by Design: 설계 단계 해석성 확보"], hue:"c", art:"에이전트 아키텍처", img:"" },
 ];
 
 /* 교수 정보: about/education/recognition 은 한 줄에 하나씩. **텍스트** 로 굵게 표시 가능. */
 const PROF = {
   name:"Prof. [교수님 성함]",
-  role:"Director, Medical Artificial Intelligence Laboratory",
+  role:"Director, XBRAIN Lab",
   dept:"Department of ICT Convergence, University of Ulsan",
   deptShort:"ICT융합학부",
-  lab:"Medical AI Laboratory",
+  lab:"XBRAIN Lab",
   office:"공학관 7-222",
   email:"leeseho@ulsan.ac.kr",
   photo:"",
-  about:"의료 인공지능, 뇌-컴퓨터 인터페이스, 설명가능 AI를 중심으로 연구를 수행하고 있습니다. 생체 신호와 의료 영상에서 임상적으로 해석 가능한 정보를 추출하고, 이를 실제 진단·치료 의사결정에 연결하는 방법론을 개발합니다.\nUNIST AI대학원, 울산대학교병원 등과 다학제 공동연구를 진행하며, 벤치마크 성능을 넘어 원리를 규명하는 연구를 지향합니다.",
-  interests:["EEG / Motor Imagery BCI","GNN 기반 기능적 연결성","Explainable AI","Medical Imaging (OCTA · CT)","Physics-Informed Neural Networks","Recommender Systems"],
-  education:["**Ph.D.** — 컴퓨터공학 / 인공지능 · [대학교 · 연도]","**M.S.** — [전공] · [대학교 · 연도]","**B.S.** — [전공] · [대학교 · 연도]"],
-  recognition:["주요 국제 저널(AIIM, CMPB, ESWA 등) 논문 게재 및 리뷰 활동","정부·기업 연구과제(삼성 SRFC 등) 수행","학부·대학원 인공지능 및 데이터사이언스 강의"],
+  about:"뇌의 정보 흐름 메커니즘을 AI 구조에 직접 반영하는 연구를 수행하고 있습니다. 생체신호와 의료 영상에서 잠재 특징과 연결성을 추출하고, 이를 뇌 연결성을 모방한 멀티 에이전트 구조와 최적 아키텍처 자동 설계로 이어 붙이는 순환형 방법론을 개발합니다. 같은 방법론을 산업 센서와 공정 데이터로 확장합니다.\nUNIST AI대학원, 울산대학교병원 등과 다학제 공동연구를 진행하며, 벤치마크 성능을 넘어 원리를 규명하는 연구를 지향합니다.",
+  interests:["EEG / Motor Imagery BCI","GNN 기반 기능적 연결성","Multi-Agent Graph AI","Neural Architecture Search","Explainable AI","Medical Imaging (OCTA, CT)","Physics-Informed Neural Networks"],
+  education:["**Ph.D.** — 컴퓨터공학 / 인공지능, [대학교] [연도]","**M.S.** — [전공], [대학교] [연도]","**B.S.** — [전공], [대학교] [연도]"],
+  recognition:["주요 국제 저널(AIIM, CMPB, ESWA 등) 논문 게재 및 리뷰 활동","정부와 기업 연구과제(삼성 SRFC 등) 수행","학부와 대학원 인공지능 및 데이터사이언스 강의"],
 };
 
 /* 관리자 비밀번호(SHA-256). 기본값 = "mailab2026" — 관리 모드에서 "비밀번호 변경"으로 꼭 바꾸세요. */
@@ -911,23 +1060,27 @@ function bindBackdropClose(backdrop,close){
 }
 
 /* ---- DB ---- */
-const DEFAULTS={news:NEWS, people:PEOPLE, papers:PAPERS, patents:PATENTS, prof:PROF};
+const DEFAULTS={news:NEWS, people:PEOPLE, papers:PAPERS, patents:PATENTS, research:RESEARCH, prof:PROF};
 let DB=clone(DEFAULTS);
 const driveBaseConfigured=()=>!!(DRIVE_CONFIG.clientId&&DRIVE_CONFIG.apiKey&&DRIVE_CONFIG.adminEmail);
 const driveConfigured=()=>driveBaseConfigured()&&!!DRIVE_CONFIG.dataFileId;
 if(!driveConfigured()){try{const s=localStorage.getItem('mailab_db'); if(s){const p=JSON.parse(s); if(p&&p.papers&&p.people&&p.news&&p.patents)DB=p;}}catch(e){}}
-['news','people','papers','patents'].forEach(k=>{if(!Array.isArray(DB[k]))DB[k]=clone(DEFAULTS[k]);});
-if(!DB.prof||typeof DB.prof!=='object')DB.prof=clone(DEFAULTS.prof);
+function normalizeDB(d){
+  ['news','people','papers','patents','research'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=clone(DEFAULTS[k]);});
+  if(!d.prof||typeof d.prof!=='object')d.prof=clone(DEFAULTS.prof);
+  return d;
+}
+normalizeDB(DB);
 let driveRevision=0, driveToken='', driveTokenExpires=0, driveTokenClient=null, driveSyncing=false;
 function validDB(data){return !!(data&&Array.isArray(data.news)&&Array.isArray(data.people)&&Array.isArray(data.papers)&&Array.isArray(data.patents)&&data.prof);}
 async function driveApiError(response,fallback){
   let message='',reason='';
   try{const body=await response.json();message=body&&body.error&&body.error.message||'';reason=body&&body.error&&body.error.errors&&body.error.errors[0]&&body.error.errors[0].reason||'';}catch(e){}
-  return new Error(`${fallback} (${response.status}${reason?' · '+reason:''})${message?' '+message:''}`);
+  return new Error(`${fallback} (${response.status}${reason?', '+reason:''})${message?' '+message:''}`);
 }
 function applyDB(data){
   if(!validDB(data))throw new Error('Drive 데이터 형식이 올바르지 않습니다.');
-  DB=clone(data); renderAll();
+  DB=normalizeDB(clone(data)); renderAll();
 }
 async function driveRequestToken(){
   if(driveToken&&Date.now()<driveTokenExpires-60000)return driveToken;
@@ -983,6 +1136,134 @@ async function saveDriveDB(){
     driveRevision=payload.revision; toast('Google Drive에 저장했습니다. 모든 방문자에게 반영됩니다.'); return true;
   }catch(err){console.error(err);toast(err.message);return false;}finally{driveSyncing=false;}
 }
+/* ---- image assets ----------------------------------------------------------
+   이미지를 데이터 JSON 안에 base64로 넣으면, 방문자가 페이지를 열 때마다 모든 사진을
+   본문과 함께 통째로 새로 내려받는다(캐시 불가). 그래서 이미지는 Drive의 개별 파일로
+   올리고 JSON에는 URL 문자열만 남긴다. 이렇게 하면
+     - 데이터 JSON이 수십 KB로 줄어 첫 로딩이 즉시 끝나고
+     - 사진은 브라우저와 CDN이 캐시하며, 화면에 보이는 것만(lazy) 받아온다.
+   base64 값도 계속 읽을 수 있으므로 이전 데이터와 그대로 호환된다.            */
+const IMG_FOLDER_NAME='xbrain-site-images';
+let driveImageFolderId='';
+const isDataImage=v=>typeof v==='string'&&v.startsWith('data:image/');
+/* 이미지의 저장 위치는 하나로 고정이다 - Drive의 IMG_FOLDER_NAME 폴더, 파일 하나당 영구 파일 ID.
+   아래 목록은 "그 파일을 어디서 찾을지"가 아니라 "같은 파일을 공개로 읽을 때 쓸 URL 형식"의 후보다.
+   구글은 같은 파일을 여러 경로로 서비스하는데 어느 형식이 이 계정/권한 설정에서 실제로 열리는지
+   배포 전에는 확인할 수 없었으므로, 앞에서부터 시도하고 실패하면 아래 error 핸들러가 다음으로 넘긴다.
+   표시 URL은 저장된 파일 ID에서 매번 다시 만들기 때문에, 어떤 형식이 쓰이든 데이터는 그대로다.
+   배포 테스트에서 동작하는 형식이 확인되면 이 목록을 그 하나로 줄여도 된다. */
+const IMG_HOSTS=[
+  (id,w)=>'https://lh3.googleusercontent.com/d/'+id+(w?'=w'+w:''),                 /* CDN 캐시 + 폭 지정 */
+  (id,w)=>'https://drive.google.com/thumbnail?id='+id+'&sz=w'+(w||1600),           /* 공개 썸네일 */
+  id=>'https://www.googleapis.com/drive/v3/files/'+id+'?alt=media&key='+encodeURIComponent(DRIVE_CONFIG.apiKey) /* Drive API 원본 */
+];
+const driveImageUrl=id=>IMG_HOSTS[0](id);
+function driveImageId(url){
+  if(typeof url!=='string')return '';
+  const m=url.match(/lh3\.googleusercontent\.com\/d\/([\w-]+)/)
+    ||url.match(/drive\.google\.com\/(?:uc|thumbnail)\?(?:[^#]*&)?id=([\w-]+)/)
+    ||url.match(/drive\.google\.com\/file\/d\/([\w-]+)/)
+    ||url.match(/googleapis\.com\/drive\/v3\/files\/([\w-]+)/);
+  return m?m[1]:'';
+}
+/* 카드와 목록용 축소본: 필요한 폭만 받아온다. Drive 이미지가 아니면 URL을 그대로 쓴다. */
+function imgSrc(url,w){const id=driveImageId(url); return id?IMG_HOSTS[0](id,w):url;}
+/* 이미지가 열리지 않으면 다음 후보 경로로 자동 교체한다(사이트가 스스로 복구된다).
+   error는 버블링하지 않으므로 캡처 단계에서 받는다. */
+addEventListener('error',e=>{
+  const img=e.target;
+  if(!img||img.tagName!=='IMG')return;
+  const id=driveImageId(img.src); if(!id)return;
+  const next=Number(img.dataset.imgHost||0)+1; if(next>=IMG_HOSTS.length)return;
+  const m=/=w(\d+)/.exec(img.src)||/[?&]sz=w(\d+)/.exec(img.src);
+  img.dataset.imgHost=next;
+  img.src=IMG_HOSTS[next](id, m?Number(m[1]):undefined);
+},true);
+/* 배포 후 브라우저 콘솔에서 imgHostReport() 를 실행하면, 실제로 어떤 URL 형식으로 이미지가
+   표시되었는지 집계된다. host 0만 쓰였다면 IMG_HOSTS를 그 하나로 줄여도 된다. */
+function imgHostReport(){
+  const imgs=[...document.images].filter(i=>driveImageId(i.src));
+  const byHost={}, failed=[];
+  imgs.forEach(i=>{
+    const h=Number(i.dataset.imgHost||0); byHost[h]=(byHost[h]||0)+1;
+    if(i.complete&&!i.naturalWidth)failed.push(i.src);
+  });
+  const loaded=imgs.filter(i=>i.complete&&i.naturalWidth>0).length;
+  Object.keys(byHost).forEach(h=>console.info(`host ${h} (${IMG_HOSTS[h]('<FILE_ID>',480)}) : ${byHost[h]}개`));
+  console.info(`Drive 이미지 ${imgs.length}개 중 ${loaded}개 표시 성공`);
+  if(failed.length)console.warn('표시 실패:',failed);
+  return {total:imgs.length, loaded, byHost, failed};
+}
+/* 자르기 편집기용: canvas 오염(taint)을 피하려면 CORS 헤더가 오는 Drive API 경로로 읽어야 한다. */
+function corsImageUrl(url){
+  const id=driveImageId(url);
+  return id?'https://www.googleapis.com/drive/v3/files/'+id+'?alt=media&key='+encodeURIComponent(DRIVE_CONFIG.apiKey):url;
+}
+async function driveEnsureImageFolder(){
+  if(driveImageFolderId)return driveImageFolderId;
+  const token=await driveRequestToken();
+  const q=encodeURIComponent("name='"+IMG_FOLDER_NAME+"' and mimeType='application/vnd.google-apps.folder' and trashed=false");
+  const found=await fetch('https://www.googleapis.com/drive/v3/files?q='+q+'&fields=files(id)',{headers:{Authorization:'Bearer '+token}});
+  if(!found.ok)throw await driveApiError(found,'Drive 이미지 폴더를 조회하지 못했습니다.');
+  const list=await found.json();
+  if(list.files&&list.files.length)return driveImageFolderId=list.files[0].id;
+  const made=await fetch('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',
+    headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({name:IMG_FOLDER_NAME,mimeType:'application/vnd.google-apps.folder'})});
+  if(!made.ok)throw await driveApiError(made,'Drive 이미지 폴더를 만들지 못했습니다.');
+  return driveImageFolderId=(await made.json()).id;
+}
+function dataUrlToBlob(dataUrl){
+  const comma=dataUrl.indexOf(','), head=dataUrl.slice(0,comma), b64=dataUrl.slice(comma+1);
+  const mime=(head.match(/data:([^;]+)/)||[,'image/jpeg'])[1];
+  const bin=atob(b64), bytes=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+  return new Blob([bytes],{type:mime});
+}
+async function driveUploadImage(dataUrl){
+  const token=await driveRequestToken(), parent=await driveEnsureImageFolder();
+  const blob=dataUrlToBlob(dataUrl), ext=(blob.type.split('/')[1]||'jpg').replace('jpeg','jpg');
+  const meta={name:'img-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext,parents:[parent]};
+  const boundary='xbimg_'+Date.now(), CRLF=String.fromCharCode(13,10);
+  const head='--'+boundary+CRLF+'Content-Type: application/json; charset=UTF-8'+CRLF+CRLF+JSON.stringify(meta)
+    +CRLF+'--'+boundary+CRLF+'Content-Type: '+blob.type+CRLF+CRLF;
+  const body=new Blob([head, blob, CRLF+'--'+boundary+'--']);
+  const up=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',
+    headers:{Authorization:'Bearer '+token,'Content-Type':'multipart/related; boundary='+boundary},body});
+  if(!up.ok)throw await driveApiError(up,'이미지를 Drive에 올리지 못했습니다.');
+  const id=(await up.json()).id;
+  const shared=await fetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(id)+'/permissions',{method:'POST',
+    headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
+    body:JSON.stringify({role:'reader',type:'anyone',allowFileDiscovery:false})});
+  if(!shared.ok)throw await driveApiError(shared,'이미지의 공개 읽기 권한을 설정하지 못했습니다.');
+  return driveImageUrl(id);
+}
+/* 내장 이미지를 Drive 파일로 옮기고 URL로 교체. 이미 URL인 값은 건너뛰므로 여러 번 실행해도 안전하다.
+   대표 이미지(img)와 갤러리 첫 장(images[0].display)처럼 같은 base64가 여러 곳에 들어 있는 경우가
+   많으므로, 같은 값은 seen 캐시로 한 번만 올리고 URL을 공유한다. */
+async function externalizeImages(node,onStep,seen){
+  seen=seen||new Map();
+  const keys=Array.isArray(node)?node.map((_,i)=>i):(node&&typeof node==='object'?Object.keys(node):null);
+  if(!keys)return node;
+  for(const k of keys){
+    const v=node[k];
+    if(isDataImage(v)){
+      const hit=seen.get(v);
+      node[k]=hit||await driveUploadImage(v);
+      if(!hit){seen.set(v,node[k]); if(onStep)onStep();}
+    }
+    else await externalizeImages(v,onStep,seen);
+  }
+  return node;
+}
+/* 실제로 올려야 하는 장수 = 서로 다른 base64 값의 개수 */
+function countDataImages(node,seen){
+  seen=seen||new Set();
+  const vals=Array.isArray(node)?node:(node&&typeof node==='object'?Object.values(node):null);
+  if(vals)vals.forEach(v=>{if(isDataImage(v))seen.add(v); else countDataImages(v,seen);});
+  return seen.size;
+}
+
 async function saveDB(){
   if(driveConfigured())return saveDriveDB();
   try{
@@ -1049,20 +1330,119 @@ function newsImg(seed){
     <circle cx="380" cy="80" r="30" fill="#fff" opacity=".18"/>
     <defs><linearGradient id="${id}" x1="0" y1="0" x2="480" y2="300"><stop stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs></svg>`;
 }
+/* ---- research card art ------------------------------------------------------
+   연구 축 카드에 사진(img)이 없을 때, 축의 성격을 담은 도식을 그린다.
+   .vis는 카드 폭에 맞춰 좌우가 잘리므로(preserveAspectRatio slice)
+   핵심 요소는 모두 x 60~420 안에 배치한다. */
+const ART_KIND={'신호 영상 그래프':'signal','연결성 네트워크':'connect','에이전트 아키텍처':'agents','기본 타일':'tile',
+  signal:'signal', connect:'connect', agents:'agents', tile:'tile'};
+const ART_OPTS=['신호 영상 그래프','연결성 네트워크','에이전트 아키텍처','기본 타일'];
+
+/* 시계열 → 영상 래스터 → 관계 그래프. 카드 1의 "공통 구조"를 그대로 보여준다. */
+function artSignal(){
+  const arrow=(x,y)=>`<path d="M${x} ${y} h12"/><path d="M${x+8} ${y-5} l5 5 -5 5"/>`;
+  const op=[.5,.28,.62,.34,.3,.66,.4,.55,.58,.38,.26,.48];
+  let tiles='';
+  for(let r=0;r<3;r++)for(let c=0;c<4;c++)
+    tiles+=`<rect x="${212+c*20}" y="${58+r*20}" width="16" height="16" rx="2.5" fill="#fff" opacity="${op[r*4+c]}"/>`;
+  const gn=[[322,66,4],[364,48,5],[400,80,4],[352,106,5],[398,122,3.5]];
+  let edges='',nodes='';
+  [[0,1],[1,2],[2,3],[3,0],[3,4],[1,3]].forEach(([a,b])=>{
+    edges+=`<line x1="${gn[a][0]}" y1="${gn[a][1]}" x2="${gn[b][0]}" y2="${gn[b][1]}"/>`;});
+  gn.forEach(([x,y,r],i)=>{nodes+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity="${i%2?.72:.94}"/>`;});
+  return `<g fill="none" stroke="#fff" stroke-linecap="round">`
+    +`<path d="M68 88 H88 L94 88 L99 60 L104 110 L109 84 L114 88 H136 L142 88 L147 60 L152 110 L157 84 L162 88 H182" stroke-opacity=".8" stroke-width="1.9"/>`
+    +`<path d="M68 124 q11 -13 21 1 t18 -9 t17 11 t19 -7 t21 6 t18 -2" stroke-opacity=".4" stroke-width="1.4"/></g>`
+    +`<g fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round">${arrow(190,90)}${arrow(292,90)}</g>`
+    +tiles+`<g fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.3">${edges}</g>${nodes}`;
+}
+
+/* 가중 연결성 그래프 + 아래쪽 시공간 패턴 띠. 카드 2의 위상과 연결성 도출. */
+function artConnect(){
+  const cx=240, cy=66, r=48, n=8, pt=[];
+  for(let i=0;i<n;i++){const a=(i/n)*Math.PI*2-Math.PI/2;
+    pt.push([+(cx+r*Math.cos(a)).toFixed(1), +(cy+r*Math.sin(a)).toFixed(1)]);}
+  const pairs=[[0,3],[0,5],[1,4],[1,6],[2,5],[2,7],[3,6],[4,7],[0,2],[4,6]];
+  const wid=[2.2,1.2,1.8,.9,2.4,1.4,1.1,1.9,.8,1.5];
+  let edges='',nodes='',bars='';
+  pairs.forEach(([a,b],i)=>{edges+=`<line x1="${pt[a][0]}" y1="${pt[a][1]}" x2="${pt[b][0]}" y2="${pt[b][1]}"`
+    +` stroke-width="${wid[i]}" stroke-opacity="${(.18+.11*wid[i]).toFixed(2)}"/>`;});
+  pt.forEach(([x,y],i)=>{nodes+=`<circle cx="${x}" cy="${y}" r="${i%3===0?5.5:4}" fill="#fff" opacity="${i%3===0?.92:.7}"/>`;});
+  for(let i=0;i<29;i++){const h=8+((i*37)%26);
+    bars+=`<rect x="${(64+i*12.4).toFixed(1)}" y="${150-h}" width="6" height="${h}" rx="1.5" fill="#fff" opacity="${(.12+.02*(i%5)).toFixed(2)}"/>`;}
+  return bars+`<g fill="none" stroke="#fff">${edges}</g>`+nodes;
+}
+
+/* 분산 에이전트 메시 → 아키텍처 후보 스택(가운데가 선택된 최적 구조). 카드 3. */
+function artAgents(){
+  const ag=[[86,56],[126,40],[162,64],[96,104],[134,116],[172,98]];
+  let edges='',nodes='',blocks='';
+  [[0,1],[1,2],[0,3],[3,4],[4,5],[2,5],[1,4],[0,4],[2,4]].forEach(([a,b],i)=>{
+    edges+=`<line x1="${ag[a][0]}" y1="${ag[a][1]}" x2="${ag[b][0]}" y2="${ag[b][1]}"`
+      +` stroke-width="${i%3?1.1:1.8}" stroke-opacity="${i%3?.34:.6}"/>`;});
+  ag.forEach(([x,y],i)=>{nodes+=`<circle cx="${x}" cy="${y}" r="${i%2?5:6.5}" fill="#fff" opacity="${i%2?.72:.94}"/>`;});
+  [[266,3],[314,5],[362,4]].forEach(([x,k],ci)=>{
+    for(let i=0;i<k;i++){const on=ci===1;
+      blocks+=`<rect x="${x}" y="${118-i*20}" width="32" height="14" rx="3" fill="${on?'#F9CE6E':'#fff'}"`
+        +` opacity="${on?.95:(.3+.1*(i%3)).toFixed(2)}"/>`;}});
+  return `<g fill="none" stroke="#fff">${edges}</g>`+nodes
+    +`<g fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"><path d="M196 78 h14"/><path d="M206 73 l5 5 -5 5"/></g>`
+    +blocks;
+}
+
+function researchArt(kind,pair,seed=0){
+  const k=ART_KIND[kind];
+  if(!k||k==='tile')return tileSVG(pair,seed);
+  const [c1,c2]=pair, id='ra'+Math.random().toString(36).slice(2,7);
+  const inner=k==='signal'?artSignal():k==='connect'?artConnect():artAgents();
+  return `<svg viewBox="0 0 480 158" preserveAspectRatio="xMidYMid slice" aria-hidden="true">`
+    +`<rect width="480" height="158" fill="url(#${id})"/>${inner}`
+    +`<defs><linearGradient id="${id}" x1="0" y1="0" x2="480" y2="158"><stop stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs></svg>`;
+}
+
 function actionBtns(type,idx){return `<div class="acts"><button class="act" data-edit="${type}:${idx}">수정</button><button class="act del" data-del="${type}:${idx}">삭제</button></div>`;}
 
-/* ---- research (static) ---- */
-$('#research-cards').innerHTML = RESEARCH.map((r,i)=>`
-  <article class="rcard"><div class="vis">${tileSVG(HUES[r.hue],i+1)}</div>
-    <div class="body"><div class="tag">${esc(r.tag)}</div><h3>${esc(r.ko)}</h3><div class="en">${esc(r.en)}</div>
-      <p>${esc(r.desc)}</p><ul>${r.items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></article>`).join('');
+/* ---- research areas ---- */
+function renderResearch(){
+  $('#research-cards').innerHTML = DB.research.map((r,i)=>`
+    <article class="rcard">${actionBtns('research',i)}
+      <div class="vis${r.img?' zoomable':''}"${r.img?` data-zoom="research:${i}" role="button" tabindex="0" aria-label="이미지 확대 보기"`:''}>${r.img?`<img src="${esc(imgSrc(r.img,960))}" alt="" loading="lazy">`:researchArt(r.art,HUES[r.hue]||HUES.a,i+1)}</div>
+      <div class="body"><div class="tag">${esc(r.tag)}</div><h3>${esc(r.ko)}</h3><div class="en">${esc(r.en)}</div>
+        <p>${esc(r.desc)}</p><ul>${(r.items||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></article>`).join('')
+    || `<div class="empty">// 연구 축이 없습니다</div>`;
+}
+
+/* ---- research pipeline: reveal on scroll ---- */
+(function(){
+  const plate=$('#plate'); if(!plate) return;
+  if(!('IntersectionObserver' in window)) return;   /* no observer: leave the figure plainly visible */
+  plate.classList.add('armed');
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){plate.classList.add('in'); io.disconnect();}});},{threshold:.18});
+  io.observe(plate);
+})();
+
+/* ---- feedback loop: 박스 실제 픽셀에 맞춘 경로 (파선이 늘어나지 않도록) ---- */
+(function(){
+  const loop=$('#ploop'); if(!loop) return;
+  const svg=loop.querySelector('.loopline'), path=svg&&svg.querySelector('path'); if(!path) return;
+  function draw(){
+    const w=loop.clientWidth, h=loop.clientHeight; if(!w||!h) return;
+    const r=Math.min(18,w/2,h);
+    svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
+    path.setAttribute('d',`M${w} 0V${h-r}A${r} ${r} 0 0 1 ${w-r} ${h}H${r}A${r} ${r} 0 0 1 0 ${h-r}V0`);
+    loop.classList.add('drawn');
+  }
+  draw();
+  if('ResizeObserver' in window)new ResizeObserver(draw).observe(loop);
+  else addEventListener('resize',draw);
+})();
 
 /* ---- news (home preview + full board with filter) ---- */
 let newsCat='전체';
 function renderNewsHome(){
   const latest=DB.news.slice(0,3);
   $('#news-home').innerHTML=latest.map((n,i)=>`
-    <article class="nh"><div class="img${n.img?' zoomable':''}"${n.img?` data-zoom="news:${i}" role="button" tabindex="0" aria-label="이미지 확대 보기"`:''}>${n.img?`<img src="${esc(n.img)}" alt="">`:newsImg(i)}</div>
+    <article class="nh"><div class="img${n.img?' zoomable':''}"${n.img?` data-zoom="news:${i}" role="button" tabindex="0" aria-label="이미지 확대 보기"`:''}>${n.img?`<img src="${esc(imgSrc(n.img,960))}" alt="" loading="lazy">`:newsImg(i)}</div>
       <div class="b"><div class="meta"><span class="cat">${esc(n.cat)}</span><time>${esc(n.date)}</time></div>
         <h4>${esc(n.title)}</h4></div></article>`).join('') || `<div class="empty">// 소식이 없습니다</div>`;
 }
@@ -1074,7 +1454,7 @@ function renderNews(){
   const rows=DB.news.map((n,idx)=>({n,idx})).filter(({n})=>newsCat==='전체'||n.cat===newsCat);
   $('#news-board').innerHTML=rows.length?rows.map(({n,idx},i)=>`
     <article class="ncard">${actionBtns('news',idx)}
-      <div class="img${n.img?' zoomable':''}"${n.img?` data-zoom="news:${idx}" role="button" tabindex="0" aria-label="${primaryIsVideo(n)?'동영상 재생':'이미지 확대 보기'}"`:''}>${n.img?`<img src="${esc(n.img)}" alt="">${primaryIsVideo(n)?'<span class="media-play">▶</span>':''}`:newsImg(i)}</div>
+      <div class="img${n.img?' zoomable':''}"${n.img?` data-zoom="news:${idx}" role="button" tabindex="0" aria-label="${primaryIsVideo(n)?'동영상 재생':'이미지 확대 보기'}"`:''}>${n.img?`<img src="${esc(imgSrc(n.img,960))}" alt="" loading="lazy">${primaryIsVideo(n)?'<span class="media-play">▶</span>':''}`:newsImg(i)}</div>
       <div class="b"><div class="meta"><span class="cat">${esc(n.cat)}</span><time>${esc(n.date)}</time></div>
         <h3>${esc(n.title)}</h3><p>${esc(n.body)}</p></div></article>`).join('') : `<div class="empty">// 해당 분류의 소식이 없습니다</div>`;
   renderNewsHome();
@@ -1088,7 +1468,7 @@ function renderPeople(){
   const groups=[...present,...extra];
   let html=groups.map(g=>{
     const rows=DB.people.map((p,idx)=>({p,idx})).filter(({p})=>p.group===g).map(({p,idx},i)=>`
-      <article class="pcard">${actionBtns('people',idx)}<div class="ph${p.photo?' zoomable':''}"${p.photo?` data-zoom="people:${idx}" role="button" tabindex="0" aria-label="이미지 확대 보기"`:''}>${p.photo?`<img src="${esc(p.photo)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover">`:avatarSVG(i+g.length)}</div>
+      <article class="pcard">${actionBtns('people',idx)}<div class="ph${p.photo?' zoomable':''}"${p.photo?` data-zoom="people:${idx}" role="button" tabindex="0" aria-label="이미지 확대 보기"`:''}>${p.photo?`<img src="${esc(imgSrc(p.photo,480))}" alt="${esc(p.name)}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`:avatarSVG(i+g.length)}</div>
         <div class="info"><div class="nm">${esc(p.name)}</div><div class="deg">${esc(p.deg)}</div>
           <div class="fo">${esc(p.focus)}</div>${p.now?`<div class="now">→ 현재: ${esc(p.now)}</div>`:''}
           ${(p.links||[]).length?`<div class="person-links">${p.links.map(linkData).map(l=>`<a class="person-link" href="${esc(l.url)}" target="_blank" rel="noopener">${linkIcon}${esc(l.label)}</a>`).join('')}</div>`:''}</div></article>`).join('');
@@ -1154,7 +1534,7 @@ function makeBoard(key, boardId, filtersId, searchId){
     const featured=rows.filter(({d})=>d.featured).sort((a,b)=>(Number(a.d.featuredOrder)||9999)-(Number(b.d.featuredOrder)||9999)||Number(b.d.year)-Number(a.d.year)||a.idx-b.idx);
     const regular=rows.filter(({d})=>!d.featured).sort((a,b)=>Number(b.d.year)-Number(a.d.year)||a.idx-b.idx);
     const rowHtml=({d,idx},i)=>`
-      <article class="pub${d.featured?' featured':''}"><div class="thumb${d.img?' zoomable':''}"${d.img?` data-zoom="${key}:${idx}" role="button" tabindex="0" aria-label="${primaryIsVideo(d)?'동영상 재생':'이미지 확대 보기'}"`:''}>${d.img?`<img src="${esc(d.img)}" alt="" style="width:100%;height:100%;object-fit:cover">${primaryIsVideo(d)?'<span class="media-play">▶</span>':''}`:tileSVG(Object.values(HUES)[i%3], d.year+i)}</div>
+      <article class="pub${d.featured?' featured':''}"><div class="thumb${d.img?' zoomable':''}"${d.img?` data-zoom="${key}:${idx}" role="button" tabindex="0" aria-label="${primaryIsVideo(d)?'동영상 재생':'이미지 확대 보기'}"`:''}>${d.img?`<img src="${esc(imgSrc(d.img,320))}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">${primaryIsVideo(d)?'<span class="media-play">▶</span>':''}`:tileSVG(Object.values(HUES)[i%3], d.year+i)}</div>
         <div><div class="yr">${esc(d.year)}${d.featured?'<span class="featured-mark">주요 성과</span>':''}${(d.badges||[]).map(b=>`<span class="badge-pill${String(b).includes('%')?' pct':''}">${esc(b)}</span>`).join('')}</div><h3>${esc(d.title)}</h3><div class="auth">${bold(d.authors)}</div>
           <div class="venue">${esc(d.venue)}</div><div class="ptags">${(d.tags||[]).map(t=>`<span class="pt">${esc(t)}</span>`).join('')}</div></div>
         <div class="links">${(d.links||[]).map(linkData).map(l=>`<a class="plink" href="${esc(l.url)}" target="_blank" rel="noopener">${linkIcon}${esc(l.label)}</a>`).join('')}${actionBtns(key,idx)}</div>
@@ -1217,7 +1597,7 @@ function showLightboxImage(index,reclaimFocus=false){
     img.hidden=true; img.removeAttribute('src'); player.hidden=false;
     player.src=`https://www.youtube-nocookie.com/embed/${current.videoId}?rel=0`;
   }else{
-    player.src=''; player.hidden=true; img.hidden=false; img.src=current.original||current.display;
+    player.src=''; player.hidden=true; img.hidden=false; img.src=imgSrc(current.original||current.display,1600);
   }
   $$('#lightbox-thumbs button').forEach((b,i)=>b.classList.toggle('on',i===lightboxIndex));
   const active=$(`#lightbox-thumbs button[data-lightbox-index="${lightboxIndex}"]`);
@@ -1234,7 +1614,7 @@ function openImageLightbox(ref){
   lightboxWheelDelta=0; lightboxWheelDirection=0;
   const multi=lightboxImages.length>1;
   $('#lightbox-prev').hidden=!multi; $('#lightbox-next').hidden=!multi; $('#lightbox-thumbs').hidden=!multi;
-  $('#lightbox-thumbs').innerHTML=lightboxImages.map((v,i)=>`<button type="button" data-lightbox-index="${i}" aria-label="${i+1}번 ${isYoutubeMedia(v)?'동영상':'이미지'}"><img src="${esc(v.display||v.original)}" alt="">${isYoutubeMedia(v)?'<span class="media-play">▶</span>':''}</button>`).join('');
+  $('#lightbox-thumbs').innerHTML=lightboxImages.map((v,i)=>`<button type="button" data-lightbox-index="${i}" aria-label="${i+1}번 ${isYoutubeMedia(v)?'동영상':'이미지'}"><img src="${esc(imgSrc(v.display||v.original,200))}" alt="" loading="lazy">${isYoutubeMedia(v)?'<span class="media-play">▶</span>':''}</button>`).join('');
   showLightboxImage(0); $('#image-lightbox').classList.add('open'); $('#image-lightbox').setAttribute('aria-hidden','false');
 }
 function closeImageLightbox(){
@@ -1304,7 +1684,7 @@ function renderProf(){
   const chips=(p.interests||[]).map(x=>`<span class="chip">${esc(x)}</span>`).join('');
   const edu=(p.education||[]).map(x=>`<li>${bold(x)}</li>`).join('');
   const rec=(p.recognition||[]).map(x=>`<li>${bold(x)}</li>`).join('');
-  const photo=p.photo?`<img src="${esc(p.photo)}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover">`
+  const photo=p.photo?`<img src="${esc(imgSrc(p.photo,680))}" alt="${esc(p.name)}" style="width:100%;height:100%;object-fit:cover">`
     :`<svg viewBox="0 0 320 400" preserveAspectRatio="xMidYMid slice"><rect width="320" height="400" fill="url(#pgp)"/>
         <circle cx="160" cy="150" r="62" fill="rgba(255,255,255,.16)"/><path d="M70 400 C70 300 110 260 160 260 C210 260 250 300 250 400 Z" fill="rgba(255,255,255,.16)"/>
         <defs><linearGradient id="pgp" x1="0" y1="0" x2="320" y2="400"><stop stop-color="#0A6E42"/><stop offset="1" stop-color="#0C3325"/></linearGradient></defs></svg>`;
@@ -1334,7 +1714,7 @@ function applyStats(){
   const vals={
     papers: DB.papers.length,
     patents: DB.patents.length,
-    areas: (typeof RESEARCH!=='undefined'?RESEARCH.length:0),
+    areas: DB.research.length,
     members: DB.people.filter(p=>p.group!=='Alumni').length
   };
   $$('#home [data-stat]').forEach(el=>{const v=vals[el.dataset.stat];
@@ -1342,7 +1722,7 @@ function applyStats(){
 }
 
 function renderAll(){
-  renderProf(); renderArt(); renderNews(); renderPeople(); paperBoard.render(); patentBoard.render();
+  renderProf(); renderArt(); renderResearch(); renderNews(); renderPeople(); paperBoard.render(); patentBoard.render();
   $('#pp-count').textContent=DB.papers.length;
   $('#pp-q1').textContent=DB.papers.filter(p=>(p.badges||[]).includes('Q1')).length;
   $('#pt-count').textContent=DB.patents.length;
@@ -1369,11 +1749,20 @@ const SCHEMA={
   patents:{title:'특허', fields:[
     {k:'year',label:'연도',type:'number'},{k:'title',label:'명칭',type:'text'},
     {k:'authors',label:'발명자  (연구실 발명자는 **이름**)',type:'text'},
-    {k:'venue',label:'상태 / 번호  (예: 등록 · 제10-XXXXXXX호)',type:'text'},
+    {k:'venue',label:'상태 / 번호  (예: 등록 제10-XXXXXXX호)',type:'text'},
     {k:'featured',label:'주요 성과로 게시판 상단에 고정',type:'toggle'},
     {k:'featuredOrder',label:'주요 성과 표시 우선순위  (숫자가 작을수록 위)',type:'priority'},
     {k:'img',label:'대표 이미지  (목록 왼쪽 패널)',type:'image'},
     {k:'tags',label:'태그  (쉼표로 구분)',type:'tags'},{k:'links',label:'링크  (URL 또는 라벨|URL)',type:'links'}]},
+  research:{title:'연구 축', fields:[
+    {k:'tag',label:'영문 태그  (카드 맨 위 라벨)',type:'text'},
+    {k:'ko',label:'제목  (한글)',type:'text'},
+    {k:'en',label:'영문 제목',type:'text'},
+    {k:'desc',label:'설명',type:'textarea'},
+    {k:'items',label:'세부 항목  (한 줄에 하나)',type:'lines'},
+    {k:'img',label:'카드 상단 그림',type:'image'},
+    {k:'art',label:'기본 도식  (그림을 넣지 않을 때만 사용)',type:'select',opts:ART_OPTS},
+    {k:'hue',label:'기본 도식 색',type:'select',opts:['a','b','c']}]},
   people:{title:'구성원', fields:[
     {k:'group',label:'구분',type:'select',opts:GROUP_ORDER},
     {k:'name',label:'이름',type:'text'},{k:'deg',label:'학위 / 직함  (예: Ph.D. Student, M.S. 2024)',type:'text'},
@@ -1400,10 +1789,10 @@ const SCHEMA={
 };
 let formCtx={type:null, idx:null, single:false, storeKey:null, img:'', imgKey:null, cropSaved:null, originalKey:null, cropKey:null, gallery:[], galleryIndex:0};
 let cropCtx=null;
-const supportsCrop=type=>['people','prof','papers','patents','news'].includes(type);
+const supportsCrop=type=>['people','prof','papers','patents','news','research'].includes(type);
 const supportsGallery=type=>['papers','patents','news'].includes(type);
 const cropKeys=type=>type==='people'||type==='prof'?{original:'photoOriginal',crop:'photoCrop'}:{original:'imgOriginal',crop:'imgCrop'};
-const cropSize=type=>type==='prof'?{w:640,h:800}:type==='news'?{w:960,h:600}:(type==='papers'||type==='patents'?{w:960,h:760}:{w:800,h:800});
+const cropSize=type=>type==='prof'?{w:640,h:800}:type==='news'?{w:960,h:600}:type==='research'?{w:960,h:400}:(type==='papers'||type==='patents'?{w:960,h:760}:{w:800,h:800});
 function normalizedGallery(item,keys,imgKey){
   if(Array.isArray(item.images)&&item.images.length)return item.images.map(v=>typeof v==='string'?{original:v,display:v,crop:null}:{...v,original:v.original||v.display||'',display:v.display||v.original||'',crop:v.crop||null}).filter(v=>v.original);
   const original=item[keys.original]||item[imgKey]||'';
@@ -1421,7 +1810,7 @@ function openForm(type, idx){
     img:supportsCrop(type)?(item[keys.original]||savedImg):savedImg,
     cropSaved:supportsCrop(type)?(item[keys.crop]||null):null,originalKey:keys.original,cropKey:keys.crop,gallery,galleryIndex:0};
   if(gallery.length){formCtx.img=editorMediaSource(gallery[0]); formCtx.cropSaved=gallery[0].crop;}
-  $('#modal-title').textContent=(single||idx!=null?'수정 · ':'추가 · ')+sch.title;
+  $('#modal-title').textContent=sch.title+(single||idx!=null?' 수정':' 추가');
   $('#modal-fields').innerHTML=sch.fields.map(f=>{
     const v=item[f.k];
     if(f.type==='textarea') return `<div class="field"><label>${esc(f.label)}</label><textarea data-k="${f.k}">${esc(v||'')}</textarea></div>`;
@@ -1442,7 +1831,7 @@ function openForm(type, idx){
           <div class="hint" style="margin:0">사진을 드래그해 표시할 영역을 정하고, 슬라이더로 확대할 수 있습니다.</div></div>`:
           `<div class="img-prev" id="imgprev">${formCtx.img?`<img src="${esc(formCtx.img)}">`:'미리보기'}</div>`}
         <input type="file" accept="image/*" id="imgfile"${supportsGallery(type)?' multiple':''}><input type="text" id="imgurl" placeholder="${supportsGallery(type)?'이미지 URL 또는 YouTube 링크를 입력해 추가':'또는 이미지 URL 붙여넣기'}" value="${!supportsGallery(type)&&formCtx.img&&formCtx.img.indexOf('data:')!==0?esc(formCtx.img):''}">
-        <div class="img-actions"><button type="button" class="img-remove" id="imgremove"${formCtx.img?'':' hidden'}>${supportsGallery(type)?'모든 미디어 삭제':'사진 삭제'} · 기본 이미지로 복원</button></div></div>
+        <div class="img-actions"><button type="button" class="img-remove" id="imgremove"${formCtx.img?'':' hidden'}>${supportsGallery(type)?'모든 미디어 삭제':'사진 삭제'} 후 기본 이미지로 복원</button></div></div>
         <div class="hint">${supportsGallery(type)?'업로드한 사진은 데이터에 저장되고, YouTube 영상은 링크와 썸네일만 저장됩니다.':'파일을 올리면 사진이 파일 안에 함께 저장됩니다.'}</div></div>`;
     return `<div class="field"><label>${esc(f.label)}</label><input type="${f.type}" data-k="${f.k}" value="${esc(v==null?'':v)}"></div>`;
   }).join('');
@@ -1496,7 +1885,7 @@ function openForm(type, idx){
 }
 function renderGalleryEditor(){
   const strip=$('#galleryedit'); if(!strip)return;
-  strip.innerHTML=formCtx.gallery.map((v,i)=>`<button type="button" class="${i===formCtx.galleryIndex?'on':''}" data-gallery-index="${i}" aria-label="${i+1}번 ${isYoutubeMedia(v)?'동영상':'사진'} 편집"><img src="${esc(v.display||v.original)}" alt="">${isYoutubeMedia(v)?'<span class="media-play">▶</span>':''}<span class="gallery-no">${i+1}${i===0?' · 대표':''}</span></button>`).join('');
+  strip.innerHTML=formCtx.gallery.map((v,i)=>`<button type="button" class="${i===formCtx.galleryIndex?'on':''}" data-gallery-index="${i}" aria-label="${i+1}번 ${isYoutubeMedia(v)?'동영상':'사진'} 편집"><img src="${esc(imgSrc(v.display||v.original,200))}" alt="" loading="lazy">${isYoutubeMedia(v)?'<span class="media-play">▶</span>':''}<span class="gallery-no">${i+1}${i===0?' 대표':''}</span></button>`).join('');
   const has=formCtx.gallery.length>0, i=formCtx.galleryIndex;
   $('#galleryprev').disabled=!has||i===0; $('#gallerynext').disabled=!has||i===formCtx.gallery.length-1; $('#galleryremove').disabled=!has;
   $('#imgremove').hidden=!has;
@@ -1554,8 +1943,13 @@ function initCrop(src,saved=null,locked=false){
     canvas.onpointerup=canvas.onpointercancel=()=>{cropCtx.drag=false; canvas.classList.remove('dragging');};
     clampCrop(); drawCrop();
   };
-  img.onerror=()=>toast('이미지 URL을 불러오지 못했습니다.');
-  img.src=src;
+  img.onerror=()=>{
+    /* CORS를 허용하지 않는 외부 URL: 표시만 하고 자르기 저장은 원본 URL로 대체된다 */
+    if(img.crossOrigin){img.crossOrigin=null; img.src=src; return;}
+    toast('이미지 URL을 불러오지 못했습니다.');
+  };
+  if(/^https?:/i.test(src||'')){img.crossOrigin='anonymous'; img.src=corsImageUrl(src);}
+  else img.src=src;
 }
 function cropMetrics(){
   const c=$('#cropcanvas'), i=cropCtx.img, base=Math.max(c.width/i.width,c.height/i.height), scale=base*cropCtx.zoom;
@@ -1621,6 +2015,11 @@ async function saveForm(){
       obj[formCtx.cropKey]=cropCtx?{zoom:cropCtx.zoom,x:cropCtx.x,y:cropCtx.y}:null;
     }
   }
+  if(driveConfigured()&&countDataImages(obj)){
+    toast('사진을 Drive에 올리는 중입니다…');
+    try{await externalizeImages(obj);}
+    catch(err){console.error(err); toast('사진 업로드에 실패해 저장을 중단했습니다: '+err.message); return;}
+  }
   if(single) DB[storeKey]={...DB[storeKey],...obj};
   else if(idx!=null) DB[type][idx]={...DB[type][idx],...obj}; else DB[type].push(obj);
   renderAll();
@@ -1683,7 +2082,7 @@ function submitAuth(){
 async function createInitialDriveFile(){
   const token=await driveRequestToken(), boundary='mailab_'+Date.now();
   const payload={schemaVersion:1,revision:1,updatedAt:new Date().toISOString(),data:DB};
-  const metadata={name:'mailab-site-data.json',mimeType:'application/json',description:'MAILAB homepage public content data'};
+  const metadata={name:'mailab-site-data.json',mimeType:'application/json',description:'XBRAIN Lab homepage public content data'};
   const body='--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(metadata)+'\r\n--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify(payload)+'\r\n--'+boundary+'--';
   const created=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'multipart/related; boundary='+boundary},body});
   if(!created.ok)throw await driveApiError(created,'Drive 데이터 파일을 만들지 못했습니다.');
@@ -1692,7 +2091,7 @@ async function createInitialDriveFile(){
   if(!shared.ok)throw await driveApiError(shared,'Drive 데이터 파일의 공개 읽기 권한을 설정하지 못했습니다.');
   DRIVE_CONFIG.dataFileId=id; driveRevision=1;
   try{await navigator.clipboard.writeText(id);}catch(e){}
-  console.info('MAILAB Google Drive dataFileId:',id);
+  console.info('XBRAIN Lab Google Drive dataFileId:',id);
   toast('Drive 데이터 파일을 만들고 ID를 클립보드에 복사했습니다. README 안내에 따라 drive-config에 붙여넣고 한 번만 배포하세요.');
   return id;
 }
@@ -1718,19 +2117,34 @@ $('#ab-logout').addEventListener('click',()=>{
   authed=false; try{sessionStorage.removeItem('mailab_authed');}catch(e){}
   setEdit(false); toast('로그아웃되었습니다.');
 });
+$('#ab-assets').addEventListener('click',()=>{
+  if(!driveConfigured()){toast('Google Drive 연동이 설정되지 않아 사진을 분리할 수 없습니다.');return;}
+  const total=countDataImages(DB);
+  if(!total){toast('데이터 파일에 내장된 사진이 없습니다. 이미 모두 분리되어 있습니다.');return;}
+  askConfirm(`데이터 파일에 내장된 사진 ${total}장을 Drive의 개별 파일로 옮깁니다. 데이터 파일이 크게 줄어 방문자 로딩이 빨라집니다. 사진이 많으면 몇 분 걸릴 수 있으니 창을 닫지 마세요. 계속할까요?`,'옮기기',false).then(async ok=>{
+    if(!ok)return;
+    let done=0;
+    const step=()=>{done++; toast(`사진을 옮기는 중… ${done}/${total}`);};
+    try{await externalizeImages(DB,step);}
+    catch(err){
+      console.error(err); renderAll(); await saveDB();
+      toast(`${done}/${total}장까지 옮겨 저장했습니다. 오류: ${err.message} — 버튼을 다시 누르면 이어서 진행합니다.`); return;
+    }
+    renderAll(); const saved=await saveDB();
+    if(saved)toast(`사진 ${done}장을 Drive로 옮겼습니다. 데이터 파일이 크게 줄었습니다.`);
+  });
+});
 $('#ab-pw').addEventListener('click',()=>{if(!driveBaseConfigured())openAuth('change');});
 $('#ab-reset').addEventListener('click',()=>{
   askConfirm('모든 편집 내용을 파일 기본값으로 되돌립니다. 계속할까요?','되돌리기',false).then(async ok=>{ if(!ok)return;
-    try{localStorage.removeItem('mailab_db');}catch(e){} DB=clone(DEFAULTS);
-    ['news','people','papers','patents'].forEach(k=>{if(!Array.isArray(DB[k]))DB[k]=clone(DEFAULTS[k]);});
-    if(!DB.prof)DB.prof=clone(DEFAULTS.prof); renderAll(); const saved=await saveDB(); if(saved&&!driveConfigured())toast('기본값으로 되돌렸습니다.');
+    try{localStorage.removeItem('mailab_db');}catch(e){} DB=normalizeDB(clone(DEFAULTS)); renderAll(); const saved=await saveDB(); if(saved&&!driveConfigured())toast('기본값으로 되돌렸습니다.');
   });
 });
 
 /* ---- export updated site file ---- */
 function serializeData(){
   const j=o=>JSON.stringify(o,null,2).replace(/<\/(script)/gi,'<\\/$1');
-  return `\nconst NEWS = ${j(DB.news)};\nconst PEOPLE = ${j(DB.people)};\nconst PAPERS = ${j(DB.papers)};\nconst PATENTS = ${j(DB.patents)};\nconst PROF = ${j(DB.prof)};\nconst ADMIN_HASH = ${JSON.stringify(adminHash)};\n`;
+  return `\nconst NEWS = ${j(DB.news)};\nconst PEOPLE = ${j(DB.people)};\nconst PAPERS = ${j(DB.papers)};\nconst PATENTS = ${j(DB.patents)};\nconst RESEARCH = ${j(DB.research)};\nconst PROF = ${j(DB.prof)};\nconst ADMIN_HASH = ${JSON.stringify(adminHash)};\n`;
 }
 $('#ab-export').addEventListener('click',()=>{
   const wasEditing=document.body.classList.contains('editing'); setEdit(false);
@@ -1751,7 +2165,7 @@ $('#ab-export').addEventListener('click',()=>{
 /* ---- contact -> mailto ---- */
 $('#c-send').addEventListener('click',()=>{
   const n=$('#c-name').value||'(이름 미기재)', em=$('#c-email').value||'', r=$('#c-role').value, m=$('#c-msg').value||'';
-  const subj=encodeURIComponent(`[MAILAB 문의] ${r} — ${n}`);
+  const subj=encodeURIComponent(`[XBRAIN Lab 문의] ${r} — ${n}`);
   const body=encodeURIComponent(`이름: ${n}\n이메일: ${em}\n구분: ${r}\n\n${m}`);
   window.location.href=`mailto:leeseho@ulsan.ac.kr?subject=${subj}&body=${body}`;
 });

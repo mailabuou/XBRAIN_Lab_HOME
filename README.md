@@ -1,9 +1,11 @@
-# MAILAB Homepage
+# XBRAIN Lab Homepage
 
-> Medical Artificial Intelligence Laboratory  
-> Department of ICT Convergence · University of Ulsan
+> eXplainable Brain-inspired Research on Artificial Intelligence  
+> Department of ICT Convergence, University of Ulsan
 
-설명 가능하고 신뢰할 수 있는 의료 인공지능을 연구하는 **MAILAB**의 공식 연구실 홈페이지입니다. 의료 영상, 생체 신호, 뇌–컴퓨터 인터페이스와 임상 의사결정 지원 연구를 소개하며, 별도의 프레임워크나 데이터베이스 없이 하나의 HTML 파일로 운영됩니다.
+뇌의 정보 흐름 네트워크를 따르는 설명가능한 인공지능을 연구하는 **XBRAIN Lab**의 공식 연구실 홈페이지입니다. 생체신호와 의료 영상 분석에서 출발해 잠재 특징과 연결성 분석, 뇌 연결성을 모방한 멀티 에이전트 구조와 최적 아키텍처 자동 설계로 이어지는 순환형 연구를 소개하며, 별도의 프레임워크나 데이터베이스 없이 하나의 HTML 파일로 운영됩니다.
+
+> 이 문서에 나오는 `MAILAB Homepage`(Google Cloud 프로젝트, OAuth 클라이언트, API Key 이름), `mailab-site-data.json`(Drive 데이터 파일), `mailab_db`/`mailab_hash`(브라우저 저장 키), 저장소 URL은 **이미 운영 중인 실제 식별자**입니다. 연구실 명칭이 바뀌어도 이 값들을 바꾸면 기존 데이터와 인증이 끊기므로 그대로 유지합니다.
 
 ## Live site
 
@@ -16,10 +18,10 @@
 | --- | --- |
 | Home | 연구실 소개, 연구 분야, 주요 실적 통계와 최근 소식 |
 | Professor | 교수 프로필, 연구 관심사, 학력 및 주요 활동 |
-| People | 박사·석사·학부 인턴·졸업생 구성원 정보 |
+| People | 박사, 석사, 학부 인턴, 졸업생 구성원 정보 |
 | News | 학회, 게재, 수상, 행사 등 연구실 소식 |
-| Papers | 논문 검색, 연도 필터, 등급·태그·외부 링크 |
-| Patents | 특허 검색, 연도 필터, 상태·태그·외부 링크 |
+| Papers | 논문 검색, 연도 필터, 등급과 태그, 외부 링크 |
+| Patents | 특허 검색, 연도 필터, 상태와 태그, 외부 링크 |
 | Contact | 연구실 위치, 이메일, 지도와 문의 메일 작성 |
 
 ## 관리자 모드 사용법
@@ -188,7 +190,7 @@ dataFileId: "1AbCdEfGhIjKlMn"
 Cloud 설정이 맞더라도 `drive.file`을 추가하기 전에 발급된 예전 액세스 토큰이 남아 있으면 다음 오류가 발생할 수 있습니다.
 
 ```text
-403 · insufficientPermissions
+403 insufficientPermissions
 ACCESS_TOKEN_SCOPE_INSUFFICIENT
 ```
 
@@ -228,11 +230,26 @@ Drive 데이터에는 증가하는 `revision` 값이 포함됩니다. 저장 직
 - `PEOPLE`: 구성원
 - `PAPERS`: 논문
 - `PATENTS`: 특허
+- `RESEARCH`: 연구 축 카드
 - `PROF`: 교수 정보
 
-운영 환경에서는 관리자 모드에서 편집한 데이터가 Google Drive의 `mailab-site-data.json`에 저장됩니다. Drive 설정이 없는 개발·예비 환경에서만 `localStorage`의 `mailab_db`를 사용합니다. **백업 파일 저장** 기능으로 현재 데이터를 포함한 `index.html`을 내려받을 수도 있습니다.
+운영 환경에서는 관리자 모드에서 편집한 데이터가 Google Drive의 `mailab-site-data.json`에 저장됩니다. Drive 설정이 없는 개발과 예비 환경에서만 `localStorage`의 `mailab_db`를 사용합니다. **백업 파일 저장** 기능으로 현재 데이터를 포함한 `index.html`을 내려받을 수도 있습니다.
 
-업로드 이미지는 자동 리사이즈와 JPEG 압축을 거친 Data URL로 변환되어 Drive의 JSON 데이터에 함께 저장됩니다. 별도의 이미지 서버는 사용하지 않으며, 원본과 크롭 상태도 같은 데이터 파일에서 관리합니다. Drive 미설정 예비 모드에서는 브라우저 저장 한도가 적용될 수 있습니다.
+### 사진 저장 방식
+
+업로드 이미지는 자동 리사이즈와 JPEG 압축을 거친 뒤, **Drive의 `xbrain-site-images` 폴더에 개별 파일로 업로드**되고 데이터 JSON에는 URL 문자열만 남습니다. 관리자 모드에서 저장할 때 자동으로 처리되므로 따로 할 일은 없습니다.
+
+사진을 JSON 안에 Data URL(base64)로 넣으면 방문자가 페이지를 열 때마다 모든 사진을 본문과 함께 통째로 다시 받아야 하고, 브라우저가 이를 캐시할 수도 없습니다. 사진을 개별 파일로 분리하면
+
+- 데이터 JSON이 수십 KB로 줄어 첫 로딩이 즉시 끝나고,
+- 사진은 브라우저와 Google CDN이 캐시하며,
+- 화면에 보이는 사진만(`loading="lazy"`) 필요한 해상도로 받아옵니다.
+
+이전 방식으로 저장된 base64 이미지도 그대로 표시되므로 데이터는 호환됩니다. **JSON에 사진이 내장된 기존 데이터는 관리 모드의 `사진 분리 저장` 버튼을 한 번 눌러 이전하세요.** 진행 중 오류가 나면 그 지점까지 저장되며, 버튼을 다시 누르면 이어서 진행합니다(이미 URL인 사진은 건너뜁니다).
+
+원본과 크롭 상태는 계속 관리됩니다. 원본도 Drive 파일로 저장되고, 자르기를 다시 편집할 때는 canvas 오염을 피하기 위해 CORS를 지원하는 Drive API 경로로 원본을 읽습니다. 항목을 삭제하거나 사진을 교체하면 Drive의 이전 이미지 파일은 남으므로, 용량이 신경 쓰이면 `xbrain-site-images` 폴더에서 직접 정리하면 됩니다.
+
+Drive 미설정 예비 모드에서는 사진이 base64로 `localStorage`에 저장되며 브라우저 저장 한도가 적용될 수 있습니다.
 
 ## 프로젝트 구조
 
@@ -244,4 +261,4 @@ MAILAB_HOME/
 
 ---
 
-Built for **MAILAB · Medical Artificial Intelligence Laboratory, University of Ulsan**.
+Built for **XBRAIN Lab — eXplainable Brain-inspired Research on Artificial Intelligence, University of Ulsan**.
