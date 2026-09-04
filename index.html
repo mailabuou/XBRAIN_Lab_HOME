@@ -387,6 +387,9 @@ footer{background:var(--green-ink); color:var(--inv-2); padding:64px 0 34px}
 body.editing .admin-only{display:inline-flex !important}
 body.editing .acts{display:flex !important}
 .acts{display:none; gap:6px; position:absolute; top:10px; right:10px; z-index:5}
+.acts.ord{right:auto; left:10px}
+.act:disabled{opacity:.35; cursor:default}
+.act:disabled:hover{background:rgba(255,255,255,.94); color:var(--green-deep); border-color:var(--sage)}
 .pub .acts{position:static; margin-top:10px; justify-content:flex-end}
 .act{font-family:'IBM Plex Mono'; font-size:.72rem; font-weight:500; padding:6px 11px; border-radius:8px; cursor:pointer;
   border:1px solid var(--sage); background:rgba(255,255,255,.94); color:var(--green-deep); transition:.15s}
@@ -665,7 +668,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
       <h2 class="section-h" style="max-width:24ch">단계별 연구 축</h2>
       <p class="section-sub">각 축은 독립된 연구 주제이면서 앞뒤 단계와 데이터와 구조를 주고받습니다.</p>
       <div class="grid-3" id="research-cards"></div>
-      <div style="margin-top:26px"><button class="add-btn admin-only" data-add="research">+ 연구 축 추가</button></div>
+      <div style="margin-top:26px"><button class="add-btn admin-only" data-add="research">연구 축 편집</button></div>
     </div>
   </section>
 
@@ -1413,11 +1416,25 @@ function researchArt(kind,pair,seed=0){
 }
 
 function actionBtns(type,idx){return `<div class="acts"><button class="act" data-edit="${type}:${idx}">수정</button><button class="act del" data-del="${type}:${idx}">삭제</button></div>`;}
+/* 카드 좌우 순서 변경. 양 끝에서는 해당 방향 버튼을 비활성화한다. */
+function orderBtns(type,idx,len){
+  return `<div class="acts ord">`
+    +`<button class="act" data-move="${type}:${idx}:-1"${idx===0?' disabled':''} title="왼쪽으로" aria-label="왼쪽으로 이동">&#9664;</button>`
+    +`<button class="act" data-move="${type}:${idx}:1"${idx===len-1?' disabled':''} title="오른쪽으로" aria-label="오른쪽으로 이동">&#9654;</button>`
+    +`</div>`;
+}
+async function moveItem(type,idx,dir){
+  const arr=DB[type], to=idx+dir;
+  if(!Array.isArray(arr)||to<0||to>=arr.length)return;
+  [arr[idx],arr[to]]=[arr[to],arr[idx]];
+  renderAll(); const saved=await saveDB();
+  if(saved&&!driveConfigured())toast('순서를 변경했습니다.');
+}
 
 /* ---- research areas ---- */
 function renderResearch(){
   $('#research-cards').innerHTML = DB.research.map((r,i)=>`
-    <article class="rcard">${actionBtns('research',i)}
+    <article class="rcard">${actionBtns('research',i)}${orderBtns('research',i,DB.research.length)}
       <div class="vis${r.img?' zoomable':''}"${r.img?` data-zoom="research:${i}" role="button" tabindex="0" aria-label="이미지 확대 보기"`:''}>${r.img?`<img src="${esc(imgSrc(r.img,960))}" alt="" loading="lazy">`:researchArt(r.art,HUES[r.hue]||HUES.a,i+1)}</div>
       <div class="body"><div class="tag">${esc(r.tag)}</div><h3>${esc(r.ko)}</h3><div class="en">${esc(r.en)}</div>
         <p>${esc(r.desc)}</p><ul>${(r.items||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div></article>`).join('')
@@ -2043,6 +2060,7 @@ async function saveForm(){
 document.addEventListener('click',e=>{
   const add=e.target.closest('[data-add]'); if(add){openForm(add.dataset.add,null); return;}
   const ed=e.target.closest('[data-edit]'); if(ed){const p=ed.dataset.edit.split(':'); openForm(p[0], p[1]==='single'?null:+p[1]); return;}
+  const mv=e.target.closest('[data-move]'); if(mv){const p=mv.dataset.move.split(':'); moveItem(p[0],+p[1],+p[2]); return;}
   const del=e.target.closest('[data-del]'); if(del){const p=del.dataset.del.split(':');
     askConfirm('이 항목을 삭제하시겠습니까?','삭제').then(async ok=>{ if(ok){DB[p[0]].splice(+p[1],1); renderAll(); const saved=await saveDB(); if(saved&&!driveConfigured())toast('삭제되었습니다.');} }); return;}
   const nc=e.target.closest('[data-nc]'); if(nc){newsCat=nc.dataset.nc; renderNews(); return;}
