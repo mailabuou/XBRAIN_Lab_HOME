@@ -1271,6 +1271,33 @@ async function externalizeImages(node,onStep,seen){
   }
   return node;
 }
+/* DB 어딘가에서 참조되는 Drive 이미지 파일 ID 집합.
+   같은 사진이 대표 이미지와 갤러리 항목에 함께 쓰이는 경우가 많아, 한 곳에서 사라졌다고
+   바로 지우면 다른 곳의 참조가 깨진다. 그래서 개별 경우를 처리하지 않고 집합으로 비교한다. */
+function driveImageIds(node,out){
+  out=out||new Set();
+  const vals=Array.isArray(node)?node:(node&&typeof node==='object'?Object.values(node):null);
+  if(!vals)return out;
+  vals.forEach(v=>{
+    if(typeof v==='string'){const id=driveImageId(v); if(id)out.add(id);}
+    else if(v&&typeof v==='object')driveImageIds(v,out);
+  });
+  return out;
+}
+/* before(변경 전 참조 집합)에는 있었지만 지금은 어디에서도 쓰이지 않는 파일을 Drive에서 지운다.
+   저장이 성공한 뒤에만 호출해야 한다 - 저장이 실패하면 공개 데이터는 아직 옛 사진을 가리킨다. */
+async function pruneDriveImages(before){
+  if(!driveConfigured()||!before||!before.size)return 0;
+  const after=driveImageIds(DB);
+  const gone=[...before].filter(id=>!after.has(id));
+  if(!gone.length)return 0;
+  try{
+    const token=await driveRequestToken();
+    for(const id of gone)await driveDeleteFile(token,id);
+    console.info('사용하지 않게 된 Drive 이미지 '+gone.length+'개를 삭제했습니다:',gone);
+  }catch(err){console.error('Drive 이미지 정리 실패:',err);}
+  return gone.length;
+}
 /* 실제로 올려야 하는 장수 = 서로 다른 base64 값의 개수 */
 function countDataImages(node,seen){
   seen=seen||new Set();
@@ -2018,6 +2045,7 @@ function resizeImage(file){
 }
 async function saveForm(){
   const {type,idx,single,storeKey,imgKey}=formCtx; const obj={};
+  const refsBefore=driveImageIds(DB);   /* 사진 교체로 버려질 파일을 저장 후 정리하기 위해 */
   $$('#modal-fields [data-k]').forEach(el=>{
     const k=el.dataset.k;
     if(el.dataset.multi){ if(!Array.isArray(obj[k]))obj[k]=[]; if(el.checked)obj[k].push(el.value); return; }
@@ -2053,7 +2081,11 @@ async function saveForm(){
   else if(idx!=null) DB[type][idx]={...DB[type][idx],...obj}; else DB[type].push(obj);
   renderAll();
   const stored=await saveDB();
-  if(stored){closeForm(); if(!driveConfigured())toast('수정 내용이 이 브라우저에 임시 저장되었습니다. 공개 홈페이지 반영은 “사이트 파일로 저장” 후 서버에 재업로드해야 합니다.');}
+  if(stored){
+    closeForm();
+    pruneDriveImages(refsBefore);
+    if(!driveConfigured())toast('수정 내용이 이 브라우저에 임시 저장되었습니다. 공개 홈페이지 반영은 “사이트 파일로 저장” 후 서버에 재업로드해야 합니다.');
+  }
 }
 
 /* ---- global edit clicks ---- */
@@ -2062,7 +2094,13 @@ document.addEventListener('click',e=>{
   const ed=e.target.closest('[data-edit]'); if(ed){const p=ed.dataset.edit.split(':'); openForm(p[0], p[1]==='single'?null:+p[1]); return;}
   const mv=e.target.closest('[data-move]'); if(mv){const p=mv.dataset.move.split(':'); moveItem(p[0],+p[1],+p[2]); return;}
   const del=e.target.closest('[data-del]'); if(del){const p=del.dataset.del.split(':');
-    askConfirm('이 항목을 삭제하시겠습니까?','삭제').then(async ok=>{ if(ok){DB[p[0]].splice(+p[1],1); renderAll(); const saved=await saveDB(); if(saved&&!driveConfigured())toast('삭제되었습니다.');} }); return;}
+    askConfirm('이 항목을 삭제하시겠습니까? 이 항목에만 쓰인 사진은 Drive에서도 함께 삭제됩니다.','삭제').then(async ok=>{
+      if(!ok)return;
+      const refsBefore=driveImageIds(DB);
+      DB[p[0]].splice(+p[1],1); renderAll();
+      const saved=await saveDB();
+      if(saved){pruneDriveImages(refsBefore); if(!driveConfigured())toast('삭제되었습니다.');}
+    }); return;}
   const nc=e.target.closest('[data-nc]'); if(nc){newsCat=nc.dataset.nc; renderNews(); return;}
 });
 $('#modal-x').addEventListener('click',closeForm);
@@ -2182,8 +2220,11 @@ $('#ab-assets').addEventListener('click',()=>{
 });
 $('#ab-pw').addEventListener('click',()=>{if(!driveBaseConfigured())openAuth('change');});
 $('#ab-reset').addEventListener('click',()=>{
-  askConfirm('모든 편집 내용을 파일 기본값으로 되돌립니다. 계속할까요?','되돌리기',false).then(async ok=>{ if(!ok)return;
-    try{localStorage.removeItem('mailab_db');}catch(e){} DB=normalizeDB(clone(DEFAULTS)); renderAll(); const saved=await saveDB(); if(saved&&!driveConfigured())toast('기본값으로 되돌렸습니다.');
+  askConfirm('모든 편집 내용을 파일 기본값으로 되돌립니다. Drive에 올려둔 사진 파일도 함께 삭제되며 되돌릴 수 없습니다. 계속할까요?','되돌리기',false).then(async ok=>{ if(!ok)return;
+    const refsBefore=driveImageIds(DB);
+    try{localStorage.removeItem('mailab_db');}catch(e){} DB=normalizeDB(clone(DEFAULTS)); renderAll();
+    const saved=await saveDB();
+    if(saved){pruneDriveImages(refsBefore); if(!driveConfigured())toast('기본값으로 되돌렸습니다.');}
   });
 });
 
