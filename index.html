@@ -407,6 +407,7 @@ body.editing .pcard,body.editing .ncard{outline:1.5px dashed transparent}
   box-shadow:var(--shadow-lg); flex-wrap:wrap; justify-content:center; max-width:calc(100vw - 32px)}
 body.editing .adminbar{display:flex} body.editing .fab{display:none}
 .adminbar .tag{font-family:'IBM Plex Mono'; font-size:.78rem; color:var(--yellow-2); margin-right:4px}
+.adminbar .abtn:disabled{opacity:.45; cursor:progress}
 .adminbar .tag .dot{background:var(--yellow-2); display:inline-block; margin-right:6px}
 .abtn{font-family:'Inter'; font-size:.85rem; font-weight:600; padding:9px 15px; border-radius:100px; cursor:pointer;
   border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.08); color:#fff; transition:.15s}
@@ -1031,11 +1032,14 @@ const bold=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
 const clone=o=>JSON.parse(JSON.stringify(o));
 
 /* ---- non-blocking UI helpers (sandbox-safe replacements for alert/confirm) ---- */
-function toast(msg){
+/* sticky=true 면 자동으로 사라지지 않는다. 업로드처럼 한 단계가 3.4초를 넘길 수 있는
+   작업에서 진행 표시가 도중에 없어져 멈춘 것처럼 보이는 것을 막는다. */
+function toast(msg,sticky){
   let t=document.getElementById('toast');
   if(!t){t=document.createElement('div'); t.id='toast'; document.body.appendChild(t);}
   t.textContent=msg; t.classList.add('show');
-  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),3400);
+  clearTimeout(t._t);
+  if(!sticky)t._t=setTimeout(()=>t.classList.remove('show'),3400);
 }
 let confirmCb=null;
 function askConfirm(msg, okLabel='삭제', danger=true){
@@ -1220,22 +1224,30 @@ function dataUrlToBlob(dataUrl){
   for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
   return new Blob([bytes],{type:mime});
 }
+/* 업로드 실패로 남은 빈 파일을 지운다(실패해도 무시). */
+async function driveDeleteFile(token,id){
+  try{await fetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(id),
+    {method:'DELETE',headers:{Authorization:'Bearer '+token}});}catch(e){}
+}
+/* 파일을 두 단계로 만든다: 메타데이터는 /drive/v3/files, 바이트는 /upload?uploadType=media.
+   uploadType=multipart(multipart/related) 단일 요청은 쓸 수 없다 - 서버가 파일을 만들어 놓고도
+   응답에 Access-Control-Allow-Origin이 없어서 브라우저가 응답을 차단하고 fetch가 실패한다.
+   media PATCH와 resumable은 CORS 헤더가 정상이라 이 중 더 단순한 media 방식을 쓴다. */
 async function driveUploadImage(dataUrl){
   const token=await driveRequestToken(), parent=await driveEnsureImageFolder();
   const blob=dataUrlToBlob(dataUrl), ext=(blob.type.split('/')[1]||'jpg').replace('jpeg','jpg');
   const meta={name:'img-'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext,parents:[parent]};
-  const boundary='xbimg_'+Date.now(), CRLF=String.fromCharCode(13,10);
-  const head='--'+boundary+CRLF+'Content-Type: application/json; charset=UTF-8'+CRLF+CRLF+JSON.stringify(meta)
-    +CRLF+'--'+boundary+CRLF+'Content-Type: '+blob.type+CRLF+CRLF;
-  const body=new Blob([head, blob, CRLF+'--'+boundary+'--']);
-  const up=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',
-    headers:{Authorization:'Bearer '+token,'Content-Type':'multipart/related; boundary='+boundary},body});
-  if(!up.ok)throw await driveApiError(up,'이미지를 Drive에 올리지 못했습니다.');
-  const id=(await up.json()).id;
+  const created=await fetch('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',
+    headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(meta)});
+  if(!created.ok)throw await driveApiError(created,'Drive에 이미지 파일을 만들지 못했습니다.');
+  const id=(await created.json()).id;
+  const up=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(id)+'?uploadType=media',
+    {method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':blob.type},body:blob});
+  if(!up.ok){const e=await driveApiError(up,'이미지 데이터를 올리지 못했습니다.'); await driveDeleteFile(token,id); throw e;}
   const shared=await fetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(id)+'/permissions',{method:'POST',
     headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},
     body:JSON.stringify({role:'reader',type:'anyone',allowFileDiscovery:false})});
-  if(!shared.ok)throw await driveApiError(shared,'이미지의 공개 읽기 권한을 설정하지 못했습니다.');
+  if(!shared.ok){const e=await driveApiError(shared,'이미지의 공개 읽기 권한을 설정하지 못했습니다.'); await driveDeleteFile(token,id); throw e;}
   return driveImageUrl(id);
 }
 /* 내장 이미지를 Drive 파일로 옮기고 URL로 교체. 이미 URL인 값은 건너뛰므로 여러 번 실행해도 안전하다.
@@ -2080,13 +2092,17 @@ function submitAuth(){
   }
 }
 async function createInitialDriveFile(){
-  const token=await driveRequestToken(), boundary='mailab_'+Date.now();
+  const token=await driveRequestToken();
   const payload={schemaVersion:1,revision:1,updatedAt:new Date().toISOString(),data:DB};
   const metadata={name:'mailab-site-data.json',mimeType:'application/json',description:'XBRAIN Lab homepage public content data'};
-  const body='--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify(metadata)+'\r\n--'+boundary+'\r\nContent-Type: application/json\r\n\r\n'+JSON.stringify(payload)+'\r\n--'+boundary+'--';
-  const created=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'multipart/related; boundary='+boundary},body});
+  /* driveUploadImage와 같은 이유로 2단계로 만든다(uploadType=multipart는 응답이 CORS에 막힌다). */
+  const created=await fetch('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',
+    headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(metadata)});
   if(!created.ok)throw await driveApiError(created,'Drive 데이터 파일을 만들지 못했습니다.');
   const {id}=await created.json();
+  const filled=await fetch('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(id)+'?uploadType=media',
+    {method:'PATCH',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json;charset=utf-8'},body:JSON.stringify(payload)});
+  if(!filled.ok){const e=await driveApiError(filled,'Drive 데이터 파일에 내용을 쓰지 못했습니다.'); await driveDeleteFile(token,id); throw e;}
   const shared=await fetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(id)+'/permissions',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({type:'anyone',role:'reader'})});
   if(!shared.ok)throw await driveApiError(shared,'Drive 데이터 파일의 공개 읽기 권한을 설정하지 못했습니다.');
   DRIVE_CONFIG.dataFileId=id; driveRevision=1;
@@ -2117,21 +2133,33 @@ $('#ab-logout').addEventListener('click',()=>{
   authed=false; try{sessionStorage.removeItem('mailab_authed');}catch(e){}
   setEdit(false); toast('로그아웃되었습니다.');
 });
+let assetsRunning=false;
 $('#ab-assets').addEventListener('click',()=>{
+  if(assetsRunning){toast('사진 분리가 진행 중입니다. 끝날 때까지 기다려 주세요.');return;}
   if(!driveConfigured()){toast('Google Drive 연동이 설정되지 않아 사진을 분리할 수 없습니다.');return;}
   const total=countDataImages(DB);
   if(!total){toast('데이터 파일에 내장된 사진이 없습니다. 이미 모두 분리되어 있습니다.');return;}
   askConfirm(`데이터 파일에 내장된 사진 ${total}장을 Drive의 개별 파일로 옮깁니다. 데이터 파일이 크게 줄어 방문자 로딩이 빨라집니다. 사진이 많으면 몇 분 걸릴 수 있으니 창을 닫지 마세요. 계속할까요?`,'옮기기',false).then(async ok=>{
     if(!ok)return;
+    assetsRunning=true;
+    const btn=$('#ab-assets'); btn.disabled=true;
     let done=0;
-    const step=()=>{done++; toast(`사진을 옮기는 중… ${done}/${total}`);};
+    /* 진행 표시는 고정(sticky). 첫 업로드가 끝나기 전에도 시작 상태를 먼저 보여준다. */
+    toast(`사진 0/${total} — Drive 폴더를 준비하고 첫 장을 올리는 중입니다…`,true);
+    const step=()=>{done++; toast(`사진을 옮기는 중… ${done}/${total}`,done<total);};
     try{await externalizeImages(DB,step);}
     catch(err){
-      console.error(err); renderAll(); await saveDB();
-      toast(`${done}/${total}장까지 옮겨 저장했습니다. 오류: ${err.message} — 버튼을 다시 누르면 이어서 진행합니다.`); return;
+      console.error(err); renderAll();
+      toast(`${done}/${total}장까지 옮겼습니다. 저장 중…`,true);
+      await saveDB();
+      toast(`${done}/${total}장까지 옮겨 저장했습니다. 오류: ${err.message} — 버튼을 다시 누르면 이어서 진행합니다.`);
+      assetsRunning=false; btn.disabled=false; return;
     }
-    renderAll(); const saved=await saveDB();
-    if(saved)toast(`사진 ${done}장을 Drive로 옮겼습니다. 데이터 파일이 크게 줄었습니다.`);
+    renderAll();
+    toast(`사진 ${done}장을 옮겼습니다. 데이터 파일을 저장하는 중…`,true);
+    const saved=await saveDB();
+    if(saved)toast(`완료 — 사진 ${done}장을 Drive로 옮기고 데이터 파일을 줄였습니다.`);
+    assetsRunning=false; btn.disabled=false;
   });
 });
 $('#ab-pw').addEventListener('click',()=>{if(!driveBaseConfigured())openAuth('change');});
