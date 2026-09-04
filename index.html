@@ -185,8 +185,8 @@ section{padding:84px 0}
 .ploop .cap span{font-size:.83rem; color:var(--inv-2)}
 
 .pvision{margin:52px 0 0; padding-top:34px; border-top:1px solid rgba(255,255,255,.12)}
-.pvision .el{font-family:'IBM Plex Mono'; font-size:.61rem; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--green-2); display:block; margin-bottom:14px}
+/* 라벨은 Research Pipeline과 같은 .eyebrow - .dark 규칙이 노란색과 대시를 준다 */
+.pv-stmt .eyebrow{margin-bottom:14px}
 /* 비전 선언문: 이 블록의 주장. 아래 목표들보다 한 단계 큰 활자로 둔다. */
 .pv-stmt .lead{font-size:1.22rem; color:#fff; line-height:1.58; font-weight:600; letter-spacing:-.01em;
   max-width:62ch}
@@ -636,7 +636,7 @@ body.editing .adminbar{display:flex} body.editing .fab{display:none}
 
         <div class="pvision rv" style="--d:.5s">
           <div class="pv-stmt">
-            <span class="el">Research Vision</span>
+            <span class="eyebrow">Research Vision</span>
             <p class="lead">뇌의 정보 흐름 메커니즘을 AI 구조에 직접 반영해,
               순환 피드백으로 스스로 진화하는 AI 체계를 구축합니다.</p>
           </div>
