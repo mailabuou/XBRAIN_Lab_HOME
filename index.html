@@ -1590,11 +1590,8 @@ function makeBoard(key, boardId, filtersId, searchId){
     });
     const featured=rows.filter(({d})=>d.featured).sort((a,b)=>(Number(a.d.featuredOrder)||9999)-(Number(b.d.featuredOrder)||9999)||Number(b.d.year)-Number(a.d.year)||a.idx-b.idx);
     const regular=rows.filter(({d})=>!d.featured).sort((a,b)=>{
-      if(key==='papers'){
-        const order={journal:0,conference:1,other:2};
-        return order[boardKind(key,a.d)]-order[boardKind(key,b.d)]||b.idx-a.idx;
-      }
-      return Number(b.d.year)-Number(a.d.year)||a.idx-b.idx;
+      const order=key==='papers'?{journal:0,conference:1,other:2}:{registered:0,pending:1,other:2};
+      return order[boardKind(key,a.d)]-order[boardKind(key,b.d)]||b.idx-a.idx;
     });
     const rowHtml=({d,idx},i)=>`
       <article class="pub${d.featured?' featured':''}"><div class="thumb${d.img?' zoomable':''}"${d.img?` data-zoom="${key}:${idx}" role="button" tabindex="0" aria-label="${primaryIsVideo(d)?'동영상 재생':'이미지 확대 보기'}"`:''}>${d.img?`<img src="${esc(imgSrc(d.img,320))}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover">${primaryIsVideo(d)?'<span class="media-play">▶</span>':''}`:tileSVG(Object.values(HUES)[i%3], d.year+i)}</div>
